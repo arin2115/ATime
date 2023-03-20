@@ -13,7 +13,7 @@ router.use(session({
     cookie: { secure: false }
 }))
 
-router.get('/admin', async (req, res) => {
+router.get('/', async (req, res) => {
     if (!await utils.isLogged(req.session)) return res.redirect('/login');
     var isAdmin = await utils.isAdmin(req.session);
 
