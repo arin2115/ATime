@@ -21,7 +21,7 @@ app.use('/', pages);
 app.use('/auth', auth);
 app.use('/api', api);
 app.use('/admin', admin);
-app.use('/timers', timers);
+app.use('/timer', timers);
 
 // SETTINGS
 app.use(express.static('public'))
@@ -57,6 +57,10 @@ init();
 app.get('/users', async function(req, res){
     console.log(activeUsers);
     res.json(activeUsers);
+});
+
+app.get('*', function(req, res){
+    res.send("Czego tutaj szukasz?? <button onclick=\"window.location.href='/'\">strona główna</button>");
 });
 
 let server = app.listen(5479, () => console.log('ATime listening on port 5479!'));

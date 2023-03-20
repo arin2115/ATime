@@ -51,8 +51,4 @@ router.get('/user', async (req, res) => {
         });
 });
 
-router.get('*', function(req, res){
-    res.send("Czego tutaj szukasz?? <button onclick=\"window.location.href='/'\">strona główna</button>");
-});
-
 module.exports = router
