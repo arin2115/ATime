@@ -1,0 +1,11 @@
+module.exports = {
+    admin: {
+        username: "",
+        email: "",
+        password: "",
+    },
+    email: {
+        username: '',
+        password: ''
+    }
+}

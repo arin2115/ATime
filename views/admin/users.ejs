@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Użytkownicy - ATime</title>
+
+        <style>
+            body {
+                background-color: gray;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <button id="submit" onclick="window.location.href='/user'">profil</button> <button id="submit" onclick="window.location.href='/admin'">admin panel</button></p>
+
+        <% if (users == "error") { %> <hr> <p>Wystąpił problem z wyświetleniem użytkowników.</p> <% } %>
+        <% if (emails == "error") { %> <p>Wystąpił problem z wyświetleniem emaili.</p> <% } %>
+        <% if (users.length == 0) { %> <hr> <p>Nie znaleziono żadnych użytkowników.</p> <% } %>
+        <% if (emails.length == 0) { %> <hr> <p>Nie znaleziono żadnych emaili.</p> <% } %>
+        <% if (users.length > 0) { %> <hr> <p>Użytkownicy: (usunięcie powoduje również usunięcie emaila powiązanego z kontem)</p> <% } %>
+        <% users.forEach(u => { %>
+            <p><a href="/user/<%=u.value.username%>"><%=u.value.username%></a> - <%=Buffer.from(u.value.email, 'base64').toString('utf-8')%> <% if (u.value.admin) { %>| admin <% } %> <% if (u.value.banned) { %>| zbanowany <% } %> <% if (isAdmin) { %> <button onclick="deleteUser('<%=u.value.username%>')">usuń</button> <% if (u.value.banned) { %> <button onclick="unbanUser('<%=u.value.username%>')">odbanuj</button> <% } else { %> <button onclick="banUser('<%=u.value.username%>')">zbanuj</button> <% } %> <% } if (isAdmin && !u.value.admin && session.username != u.value.username) { %> <button onclick="promote('<%=u.value.username%>')">awansuj</button><% } if (isAdmin && u.value.admin && session.username == config.admin.username) { %> <button onclick="degrade('<%=u.value.username%>')">degraduj</button><% } %></p>
+        <% }) %>
+
+        <% if (users.length > 0) { %> <hr> <p>Emaile: (usunięcie powoduje również usunięcie użytkownika powiązanego z emailem)</p> <% } %>
+        <% emails.forEach(e => { %>
+            <p><%=Buffer.from(e.id.split("email_")[1], 'base64').toString('utf-8')%> - <%=e.value.username%> <% if (isAdmin) { %> <button onclick="deleteEmail('<%=e.id.split(`email_`)[1]%>')">usuń</button> <% } %></p>
+        <% }) %>
+
+        <script>
+            function logout() {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(unescape(encodeURIComponent("<%=session.username%>")))
+                    },
+                }
+                fetch('/auth/logout', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function promote(user) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "user": user
+                    })
+                }
+                fetch('/user/promote', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function degrade(user) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "user": user
+                    })
+                }
+                fetch('/user/degrade', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function deleteUser(user) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "user": user
+                    })
+                }
+                fetch('/user/delete', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+            
+            function deleteEmail(email) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "email": email
+                    })
+                }
+                fetch('/user/email/delete', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function banUser(user) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "user": user
+                    })
+                }
+                fetch('/user/ban', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function unbanUser(user) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "user": user
+                    })
+                }
+                fetch('/user/unban', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>User - ATime</title>
+
+        <style>
+            body {
+                background-color: gray;
+                color: white;
+            }
+            iframe {
+                border: solid 1px black;
+            }
+        </style>
+    </head>
+    <body>
+	<% if (session.logged) { %>
+        	<p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <% if (isAdmin) { %> <button id="submit" onclick="window.location.href='/admin'">admin panel</button> <% } %></p>
+        	<p>Link do twojego profilu: <a href="/user/<%=session.username%>">https://atime.arindev.tech/user/<%=session.username%></a></p>
+	<% } else { %>
+		<button onclick="window.location.href='/'">strona główna</button> <button onclick="window.location.href='/login'">logowanie</button> <button onclick="window.location.href='/register'">rejestracja</button>
+	<% } %>
+
+        <hr>
+        
+        <% if (timers == "error" && !username) { %> <p>Wystąpił problem z wyświetleniem liczników użytkownika <%=username%>.</p> <% } %>
+        <% if (timers == "error" && username) { %> <p>Wystąpił problem z wyświetleniem Twoich liczników.</p> <% } %>
+        <% if (timers != "error" && !timers.length > 0 && !username) { %> <p>Nie masz żadnych liczników.</p> <% } else if (!username) { %> <p>Twoje liczniki:</p> <% } %>
+        <% if (timers != "error" && !timers.length > 0 && username) { %> <p>Użytkownik <%=username%> nie ma żadnych liczników.</p> <% } else if (username) { %> <p>Liczniki użytkownika <%=username%>:</p> <% } %>
+        <div id="userTimers">
+            <% timers.forEach(timer => { %>
+                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.time%></a> <% if (!username) { %> <button style="all: unset; color: -webkit-link; text-decoration: underline; cursor: pointer;" onclick="deleteTimer('<%=timer.id%>')">usuń</button> <% } %> | <%=timer.private ? "prywatny" : "publiczny"%> <%=timer.featured ? "| wyróżniony" : ""%></p>
+            <% }) %>
+        </div>
+
+        <% if (!username) { %>
+            <hr>
+
+            <p id="err" style="color: red"></p>
+            <input type="text" placeholder="Nazwa licznika" id="createtimer-title">
+            <input type="date" placeholder="Data licznika" id="createtimer-date">
+            <input type="text" placeholder="Info po ilości dni" id="createtimer-info">
+            prywatny:
+            <input type="checkbox" id="createtimer-private">
+            <% if (isAdmin) { %>
+                wyróżniony:
+                <input type="checkbox" id="createtimer-featured">
+            <% } %>
+            <br><br>
+            <button onclick="createTimer()">Stwórz licznik</button>
+            <button onclick="preview()">Podgląd</button>
+            <br><br>
+            <iframe id="previewframe" src="/timer/preview/nazwa/data/info" style="visibility: hidden;"></iframe>
+        <% } %>
+
+        <script src = "/socket.io/socket.io.js"></script>
+
+        <script>
+            const socket = io();
+
+            socket.on("newTimer", function (data) {
+                if (data.private) {
+                    if (data.username == "<%=username%>") {
+                        var userTimers = document.getElementById("userTimers");
+                        var newTimer = document.createElement("p");
+                        newTimer.innerHTML = "<a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a> <button style='all: unset; color: -webkit-link; text-decoration: underline; cursor: pointer;' onclick='deleteTimer(\"" + data.id + "\")'>usuń</button> | prywatny";
+                        userTimers.appendChild(newTimer);
+                    } else if (data.username == "<%=session.username%>") {
+                        window.location.reload();
+                    }
+                }
+
+                if (!data.private && data.username == "<%=username%>" || data.username == "<%=session.username%>") {
+                    var userTimers = document.getElementById("userTimers");
+                    var newTimer = document.createElement("p");
+                    newTimer.innerHTML = "<a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + `</a> | publiczny ${data.featured ? "| wyróżniony" : ""}`;
+                    userTimers.appendChild(newTimer);
+                }
+            });
+
+            socket.on("timerDeleted", function (data) {
+                if (data.private) {
+                    if (data.username == "<%=username%>") {
+                        var userTimers = document.getElementById("userTimers");
+                        var timer = document.querySelector("a[href='/timer/" + data.id + "']").parentNode;
+                        userTimers.removeChild(timer);
+                    }
+                }
+                
+                if (!data.private && data.username == "<%=username%>" || data.username == "<%=session.username%>") {
+                    var userTimers = document.getElementById("userTimers");
+                    var timer = document.querySelector("a[href='/timer/" + data.id + "']").parentNode;
+                    userTimers.removeChild(timer);
+                }
+            });
+
+            socket.on("privateTimer", function (data) {
+                if (data.username == "<%=username%>") {
+                    var userTimers = document.getElementById("userTimers");
+                    var timer = document.querySelector("a[href='/timer/" + data.id + "']").parentNode;
+                    timer.innerHTML = "<a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a> <button style='all: unset; color: -webkit-link; text-decoration: underline; cursor: pointer;' onclick='deleteTimer(\"" + data.id + "\")'>usuń</button> | prywatny";
+                }
+            });
+
+            var lastPreviewTitle = "";
+            var lastPreviewDate = "";
+            var lastPreviewInfo = "";
+
+            var isAdmin = "<%=isAdmin%>";
+
+            var featured = document.getElementById("createtimer-featured");
+            if (!isAdmin) {
+                featured.style.visibility = "hidden";
+            }
+
+            function preview() {
+                var previewframe = document.getElementById("previewframe");
+                var err = document.getElementById("err");
+                var title = document.getElementById("createtimer-title").value;
+                var date = document.getElementById("createtimer-date").value;
+                var info = document.getElementById("createtimer-info").value;
+
+                if (title == "" || date == "") {
+                    err.innerHTML = "Wypełnij tytuł oraz datę!";
+                    previewframe.src = "";
+                    previewframe.style.visibility = "hidden";
+                    lastPreviewTitle = "";
+                    lastPreviewDate = "";
+                    lastPreviewInfo = "";
+
+                    return;
+                }
+
+                if (title == lastPreviewTitle && date == lastPreviewDate && info == lastPreviewInfo) {
+                    previewframe.src = "";
+                    previewframe.style.visibility = "hidden";
+                    lastPreviewTitle = "";
+                    lastPreviewDate = "";
+                    lastPreviewInfo = "";
+                    return;
+                }
+
+                lastPreviewTitle = title;
+                lastPreviewDate = date;
+                lastPreviewInfo = info;
+
+                previewframe.src = "/timer/preview/" + document.getElementById("createtimer-title").value + "/" + document.getElementById("createtimer-date").value + "/" + document.getElementById("createtimer-info").value;
+                previewframe.style.visibility = "visible";
+            }
+
+            function deleteTimer(id) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "timerId": id
+                    })
+                }
+                fetch('/timer/delete', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+            
+            function createTimer() {
+                var title = document.getElementById("createtimer-title").value;
+                var date = document.getElementById("createtimer-date").value;
+                var info = document.getElementById("createtimer-info").value;
+
+                if (title == "" || date == "") {
+                    err.innerHTML = "Wypełnij tytuł oraz datę!";
+                    return;
+                }
+
+                var featuredcheck = document.getElementById("createtimer-featured");
+                var featured = false;
+                if (featuredcheck) featured = featuredcheck.checked;
+
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "title": document.getElementById("createtimer-title").value,
+                        "time": document.getElementById("createtimer-date").value,
+                        "info": document.getElementById("createtimer-info").value,
+                        "private": document.getElementById("createtimer-private").checked,
+                        "featured": featured
+                    })
+                }
+                fetch('/timer/create', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function featureTimer(id) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "timerId": id
+                    })
+                }
+                fetch('/timer/feature', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function unfeatureTimer(id) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "timerId": id
+                    })
+                }
+                fetch('/timer/unfeature', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function publicTimer(id) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "timerId": id
+                    })
+                }
+                fetch('/timer/public', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function privateTimer(id) {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "timerId": id
+                    })
+                }
+                fetch('/timer/private', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function logout() {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(unescape(encodeURIComponent("<%=session.username%>")))
+                    },
+                }
+                fetch('/auth/logout', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+        </script>
+    </body>
+</html>

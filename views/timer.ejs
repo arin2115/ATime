@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Timer - ATime</title>
+
+        <style>
+            body {
+                background-color: gray;
+                color: white;
+            }
+
+            .countup .timeel {
+                display: inline-block;
+                padding: 10px;
+                background: #151515;
+                margin: 0;
+                color: white;
+                margin-left: 8px;
+                border-radius: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <% if (!session.logged) { %> 
+            <button id="submit" onclick="window.location.href='/'">strona główna</button> <button onclick="window.location.href='/login'">zaloguj się</button> <button onclick="window.location.href='/register'">zarejestruj się</button>
+        <% } else { %>
+            <p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <button onclick="window.location.href='/user'">profil</button> <% if (isAdmin) { %> <button onclick="window.location.href='/admin'">admin panel</button> <% } %></p>
+        <% } %>
+    
+        <% if (!session.logged) { %> <br><br> <% } %>
+
+        <div class="countup" id="countup2">
+            <span class="timeel"><%=timer.title%></span>
+            <span class="timeel years">00</span>
+            <span class="timeel days">00</span>
+            <span class="timeel">od <%=timer.time.split("-")[2]%>.<%=timer.time.split("-")[1]%>.<%=timer.time.split("-")[0]%></span>
+        </div>
+
+        <script src = "/socket.io/socket.io.js"></script>
+
+        <script>
+            const socket = io();
+
+            socket.on("timerDeleted", function (data) {
+                if (data.id == "<%=timer.id%>") {
+                    window.location.href = "/";
+                }
+            });
+
+            window.onload = function() {
+                countUpFromTime("<%=timer.time%>T00:00:00", 'countup2');
+            };
+
+            function countUpFromTime(countFrom, id) {
+                countFrom = new Date(countFrom).getTime();
+                var now = new Date(),
+                    countFrom = new Date(countFrom),
+                    timeDifference = (now - countFrom);
+                    
+                var secondsInADay = 60 * 60 * 1000 * 24
+                    
+                days = Math.floor(timeDifference / (secondsInADay) * 1);
+                years = Math.floor(days / 365);
+                days = days - (years * 365)
+
+                var idEl = document.getElementById(id);
+
+                if (years == 0) {
+                    idEl.getElementsByClassName('years')[0].style = "display: none;";
+                }
+
+                if (years > 0) {
+                    idEl.getElementsByClassName('years')[0].innerHTML = years + " rok";
+                }
+                if (years > 1) {
+                    idEl.getElementsByClassName('years')[0].innerHTML = years + " lata";
+                }
+                if (years > 4) {
+                    idEl.getElementsByClassName('years')[0].innerHTML = years + " lat";
+                }
+
+                idEl.getElementsByClassName('days')[0].innerHTML = days + " dni <% if (timer.info) { %> <%=timer.info%> <% } %>";
+
+                clearTimeout(countUpFromTime.interval);
+                countUpFromTime.interval = setTimeout(function(){ countUpFromTime(countFrom, id); }, 1000);
+            }
+
+            function logout() {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(unescape(encodeURIComponent("<%=session.username%>")))
+                    },
+                }
+                fetch('/auth/logout', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+        </script>
+    </body>
+</html>

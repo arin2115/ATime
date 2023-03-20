@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Logowanie - ATime</title>
+        <style>
+            body {
+                background-color: gray;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+            <input id="username" type="text" placeholder="Email">
+            <input id="password" type="password" placeholder="Hasło">
+            <button id="submit" onclick="submit()">Zaloguj się</button>
+            <a href="/register">Nie masz konta? Zarejestruj się!</a>
+
+        <script>
+            function submit() {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(unescape(encodeURIComponent(document.getElementById("username").value) + ":" + document.getElementById("password").value))
+                    },
+                }
+                fetch('/auth/login', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+        </script>
+    </body>
+</html>

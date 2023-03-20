@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Rejestracja - ATime</title>
+        <style>
+            body {
+                background-color: gray;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+            <input id="email" type="email" placeholder="Email">
+            <input id="username" type="text" placeholder="Nazwa użytkownika">
+            <input id="password" type="password" placeholder="Hasło">
+            <button id="submit" onclick="submit()">Zarejestruj się</button>
+            <a href="/login">Masz już konto? Zaloguj się!</a>
+
+        <script>
+            function submit() {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa(unescape(encodeURIComponent(document.getElementById("username").value) + ":" + document.getElementById("password").value))
+                    },
+                    body: JSON.stringify({
+                        "email": document.getElementById("email").value
+                    })
+                }
+                fetch('/auth/register', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Registered successfully, verify your account by clicking the link in the email we sent you.");
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+        </script>
+    </body>
+</html>

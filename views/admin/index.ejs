@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Admin Panel - ATime</title>
+
+        <style>
+            body {
+                background-color: gray;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <button id="submit" onclick="window.location.href='/user'">profil</button></p>
+
+        <hr>
+        
+        <button id="submit" onclick="window.location.href='/admin/users'">użytkownicy</button>
+        <button id="submit" onclick="window.location.href='/admin/timers'">liczniki</button>
+
+        <script>
+            function logout() {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(unescape(encodeURIComponent("<%=session.username%>")))
+                    },
+                }
+                fetch('/auth/logout', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+        </script>
+    </body>
+</html>

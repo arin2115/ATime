@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Panel - ATime</title>
+
+        <style>
+            body {
+                background-color: gray;
+                color: white;
+            }
+            iframe {
+                border: solid 1px black;
+            }
+        </style>
+    </head>
+    <body>
+        <% if (!session.logged) { %> 
+            <button onclick="window.location.href='/login'">zaloguj się</button> <button onclick="window.location.href='/register'">zarejestruj się</button>
+        <% } else { %>
+            <p>Witaj <%=session.username%>! <button id="submit" onclick="logout()">wyloguj się</button> <button onclick="window.location.href='/user'">profil</button> <% if (isAdmin) { %> <button onclick="window.location.href='/admin'">admin panel</button> <% } %></p>
+        <% } %>
+
+        <% if (timers == "error") { %> <p>Wystąpił problem z wyświetleniem liczników.</p> <% } %>
+        <% if (timers.filter(t => t.featured).length > 0) { %> <hr> <p>Wyróżnione liczniki:</p> <% } %>
+        <div id="featuredTimers">
+            <% timers.filter(t => t.featured).forEach(timer => { %>
+                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.time%></a></p>
+            <% }) %>
+        </div>
+
+        <hr>
+
+        <div id="publicTimers">
+            <% if (timers != "error" && !timers.filter(t => !t.featured).length > 0) { %> <p>Nie znaleziono żadnych publicznych liczników.</p> <% } else { %> <p>Publiczne liczniki:</p> <% } %>
+            <% timers.filter(t => !t.featured).forEach(timer => { %>
+                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.time%></a></p>
+            <% }) %>
+        </div>
+
+        <script src = "/socket.io/socket.io.js"></script>
+
+        <script>
+            const socket = io();
+
+            socket.on("newTimer", function (data) {
+                if (!data.private) {
+                    if (data.featured) {
+                        document.getElementById("featuredTimers").innerHTML += "<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a></p>";
+                    } else {
+                        document.getElementById("publicTimers").innerHTML += "<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a></p>";
+                    }
+                }
+            });
+
+            socket.on("timerDeleted", function (data) {
+                console.log(data)
+                if (!data.private) {
+                    if (data.featured) {
+                        document.getElementById("featuredTimers").innerHTML = document.getElementById("featuredTimers").innerHTML.replace(`<p><a href="/timer/` + data.id + `">` + data.title + " - " + data.time + "</a></p>", "");
+                    } else {
+                        document.getElementById("publicTimers").innerHTML = document.getElementById("publicTimers").innerHTML.replace(`<p><a href="/timer/` + data.id + `">` + data.title + " - " + data.time + "</a></p>", "");
+                    }
+                }
+            });
+
+            socket.on("privateTimer", function (data) {
+                if (data.featured) {
+                    document.getElementById("featuredTimers").innerHTML = document.getElementById("featuredTimers").innerHTML.replace("<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a></p>", "");
+                } else {
+                    document.getElementById("publicTimers").innerHTML = document.getElementById("publicTimers").innerHTML.replace("<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a></p>", "");
+                }
+            });
+
+            function logout() {
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(unescape(encodeURIComponent("<%=session.username%>")))
+                    },
+                }
+                fetch('/auth/logout', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+        </script>
+    </body>
+</html>
