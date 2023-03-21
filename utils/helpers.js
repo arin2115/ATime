@@ -1,9 +1,21 @@
 const { QuickDB } = require("quick.db");
-const transporter = require('../index').transporter;
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const config = require('../config');
 const codes = require('./err-codes');
-const crypto = require('crypto');
 const db = new QuickDB();
+
+var transporter;
+
+function initMail() {
+    transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: config.email.username,
+          pass: config.email.password,
+        },
+    });
+}
 
 async function isLogged(session) {
     if (!session.logged || !session.username || !session.password) return false;
@@ -99,4 +111,4 @@ function compare(plain, hashed) {
 }
 
 
-module.exports = { isLogged, isAdmin, validateApiKey, isKeyBanned, makeid, error, setIfNotExists, hash, compare }
+module.exports = { initMail, isLogged, isAdmin, validateApiKey, isKeyBanned, makeid, error, setIfNotExists, hash, compare }
