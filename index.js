@@ -93,4 +93,4 @@ io.on("connection", function (socket) {
     });
 });
 
-module.exports = transporter;
+module.exports = { transporter, io };

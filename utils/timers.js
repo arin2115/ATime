@@ -1,3 +1,7 @@
+const io = require('../index').io;
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
+
 async function createTimer(data) {
     var timerId = utils.makeid(12, "default");
 

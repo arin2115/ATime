@@ -1,5 +1,5 @@
 const { QuickDB } = require("quick.db");
-const transporter = require('../index');
+const transporter = require('../index').transporter;
 const config = require('../config');
 const codes = require('./err-codes');
 const crypto = require('crypto');
