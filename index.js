@@ -35,7 +35,7 @@ app.use(session({
 }))
 
 async function init() {
-    await initMail();
+    await utils.initMail();
     if (!await db.get(`timers`)) await db.set(`timers`, []);
     await db.set(`email_${Buffer.from(config.admin.email, 'utf-8').toString('base64')}`, {username: config.admin.username});
     await db.set(`user_${config.admin.username}`, {username: config.admin.username, email: Buffer.from(config.admin.email, 'utf-8').toString('base64'), password: utils.hash(config.admin.password), admin: true, verified: true, verificationCode: ""});    
