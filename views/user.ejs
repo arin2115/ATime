@@ -30,7 +30,7 @@
         <% if (timers != "error" && !timers.length > 0 && username) { %> <p>Użytkownik <%=username%> nie ma żadnych liczników.</p> <% } else if (username) { %> <p>Liczniki użytkownika <%=username%>:</p> <% } %>
         <div id="userTimers">
             <% timers.forEach(timer => { %>
-                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.time%></a> <% if (!username) { %> <button style="all: unset; color: -webkit-link; text-decoration: underline; cursor: pointer;" onclick="deleteTimer('<%=timer.id%>')">usuń</button> <% } %> | <%=timer.private ? "prywatny" : "publiczny"%> <%=timer.featured ? "| wyróżniony" : ""%></p>
+                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.time%></a> | <%=timer.private ? "prywatny" : "publiczny"%> <%=timer.featured ? "| wyróżniony" : ""%> <% if (!username) { %>| <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <%=timer.private ? "<button onclick='publicTimer(`<%=timer.id%>`)'>upublicznij</button>" : "<button onclick='privateTimer(`<%=timer.id%>`)'>uprywatnij</button>"%> <% if (isAdmin) { %> <%=timer.featured ? "<button onclick='unfeatureTimer(`<%=timer.id%>`)'>nie wyróżniaj</button>" : "<button onclick='featureTimer(`<%=timer.id%>`)'>wyróżnij</button>"%> <% } %> <% } %></p>
             <% }) %>
         </div>
 

@@ -101,19 +101,8 @@ router.post('/delete', async (req, res) => {
 
 router.post('/feature', async (req, res) => {
     if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INVALID_SESSION", "You do not have permission to feature timers."));
+    if (!await utils.isAdmin(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to feature this timer."));
     if (!req.body.timerId) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
-
-    await db.get(`timers`)
-        .then(async (data) => {
-            var timer = data.find(t => t.id == req.body.timerId);
-
-            if (!timer) return res.status(400).json(utils.error("INVALID_TIMER", "Timer does not exist."));
-            if (!await utils.isAdmin(req.session) || timer.username != req.session.username) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to feature this timer."));
-        })
-        .catch((err) => {
-            console.error(err);
-        }
-    );
 
     timer.featureTimer(req.body.timerId);
 
@@ -126,19 +115,8 @@ router.post('/feature', async (req, res) => {
 
 router.post('/unfeature', async (req, res) => {
     if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INVALID_SESSION", "You do not have permission to unfeature timers."));
+    if (!await utils.isAdmin(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to unfeature this timer."));
     if (!req.body.timerId) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
-
-    await db.get(`timers`)
-        .then(async (data) => {
-            var timer = data.find(t => t.id == req.body.timerId);
-
-            if (!timer) return res.status(400).json(utils.error("INVALID_TIMER", "Timer does not exist."));
-            if (!await utils.isAdmin(req.session) || timer.username != req.session.username) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to unfeature this timer."));
-        })
-        .catch((err) => {
-            console.error(err);
-        }
-    );
 
     timer.unfeatureTimer(req.body.timerId);
 
