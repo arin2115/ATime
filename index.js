@@ -3,7 +3,6 @@ var express = require('express');
 var config = require('./config');
 var utils = require('./utils/helpers');
 var session = require('express-session');
-var bodyParser = require('body-parser');
 
 var app = express();
 var db = new QuickDB();
