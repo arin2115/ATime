@@ -1,6 +1,8 @@
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
 
+const utils = require('./helpers.js');
+
 async function createTimer(data) {
     var timerId = utils.makeid(12, "default");
 
@@ -14,26 +16,6 @@ async function createTimer(data) {
         featured: data.featured,
         created: Date.now()
     });
-
-    var socketData = {}
-
-    if (data.private) {
-        socketData = {
-            username: data.username,
-            private: data.private
-        }
-    } else {
-        socketData = {
-            id: timerId,
-            title: data.title,
-            time: data.time,
-            info: data.info,
-            username: data.username,
-            private: data.private,
-            featured: data.featured,
-            created: Date.now()
-        }
-    }
 
     return timerId;
 }
