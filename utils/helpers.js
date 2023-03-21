@@ -15,6 +15,8 @@ function initMail() {
           pass: config.email.password,
         },
     });
+
+    transporter.verify().then(console.log("Connected to email.")).catch(console.error);
 }
 
 async function isLogged(session) {
