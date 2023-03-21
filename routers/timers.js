@@ -78,6 +78,18 @@ router.post('/delete', async (req, res) => {
     if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to delete timers."));
     if (!req.body.timerId) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
 
+    await db.get(`timers`)
+        .then(async (data) => {
+            var timer = data.find(t => t.id == req.body.timerId);
+
+            if (!timer) return res.status(400).json(utils.error("INVALID_TIMER", "Timer does not exist."));
+            if (!await utils.isAdmin(req.session) || timer.username != req.session.username) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to delete this timer."));
+        })
+        .catch((err) => {
+            console.error(err);
+        }
+    );
+
     timer.deleteTimer(req.body.timerId);
 
     return res.status(200).json({
@@ -89,8 +101,19 @@ router.post('/delete', async (req, res) => {
 
 router.post('/feature', async (req, res) => {
     if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INVALID_SESSION", "You do not have permission to feature timers."));
-    if (!await utils.isAdmin(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to feature timers."));
     if (!req.body.timerId) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
+
+    await db.get(`timers`)
+        .then(async (data) => {
+            var timer = data.find(t => t.id == req.body.timerId);
+
+            if (!timer) return res.status(400).json(utils.error("INVALID_TIMER", "Timer does not exist."));
+            if (!await utils.isAdmin(req.session) || timer.username != req.session.username) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to feature this timer."));
+        })
+        .catch((err) => {
+            console.error(err);
+        }
+    );
 
     timer.featureTimer(req.body.timerId);
 
@@ -103,8 +126,19 @@ router.post('/feature', async (req, res) => {
 
 router.post('/unfeature', async (req, res) => {
     if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INVALID_SESSION", "You do not have permission to unfeature timers."));
-    if (!await utils.isAdmin(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to unfeature timers."));
     if (!req.body.timerId) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
+
+    await db.get(`timers`)
+        .then(async (data) => {
+            var timer = data.find(t => t.id == req.body.timerId);
+
+            if (!timer) return res.status(400).json(utils.error("INVALID_TIMER", "Timer does not exist."));
+            if (!await utils.isAdmin(req.session) || timer.username != req.session.username) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to unfeature this timer."));
+        })
+        .catch((err) => {
+            console.error(err);
+        }
+    );
 
     timer.unfeatureTimer(req.body.timerId);
 
@@ -117,8 +151,19 @@ router.post('/unfeature', async (req, res) => {
 
 router.post('/public', async (req, res) => {
     if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INVALID_SESSION", "You do not have permission to make timers public."));
-    if (!await utils.isAdmin(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to make timers public."));
     if (!req.body.timerId) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
+
+    await db.get(`timers`)
+        .then(async (data) => {
+            var timer = data.find(t => t.id == req.body.timerId);
+
+            if (!timer) return res.status(400).json(utils.error("INVALID_TIMER", "Timer does not exist."));
+            if (!await utils.isAdmin(req.session) || timer.username != req.session.username) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to make this timer public."));
+        })
+        .catch((err) => {
+            console.error(err);
+        }
+    );
 
     timer.publicTimer(req.body.timerId);
 
@@ -131,8 +176,19 @@ router.post('/public', async (req, res) => {
 
 router.post('/private', async (req, res) => {
     if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INVALID_SESSION", "You do not have permission to make timers private."));
-    if (!await utils.isAdmin(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to make timers private."));
     if (!req.body.timerId) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
+
+    await db.get(`timers`)
+        .then(async (data) => {
+            var timer = data.find(t => t.id == req.body.timerId);
+
+            if (!timer) return res.status(400).json(utils.error("INVALID_TIMER", "Timer does not exist."));
+            if (!await utils.isAdmin(req.session) || timer.username != req.session.username) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to make this timer private."));
+        })
+        .catch((err) => {
+            console.error(err);
+        }
+    );
 
     timer.privateTimer(req.body.timerId);
 
