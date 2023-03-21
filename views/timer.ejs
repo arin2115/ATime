@@ -5,41 +5,34 @@
         <title>Timer - ATime</title>
 
         <style>
-            body {
-                background-color: gray;
-                color: white;
+            html {
+                box-sizing: border-box;
             }
 
-            .countup .timeel {
-                display: inline-block;
-                padding: 10px;
-                background: #151515;
-                margin: 0;
+            *, *:before, *:after {
+                box-sizing: inherit;
+            }
+
+            html,
+            body {
+                background-color: #000;
                 color: white;
-                margin-left: 8px;
-                border-radius: 10px;
             }
 
             ul#countdown {
-                position: relative;
                 top: 50%;
-                transform: translateY(-50%);
-                width: 50%;
                 margin: 0 auto;
-                padding: 15px 0 20px 0;
+                padding: 15px 0 15px 0;
                 color: #fff;
-                border: 1px solid #adafb2;
-                border-width: 1px 0;
                 overflow: hidden;
                 font-family: "Arial Narrow", Arial, sans-serif;
                 font-weight: bold;
+                text-align: center;
             }
 
             ul#countdown li {
-                margin: 0 -3px 0 0;
-                padding: 0;
+                padding: 50px;
                 display: inline-block;
-                width: 25%;
                 font-size: 72px;
                 font-size: 6vw;
                 text-align: center;
@@ -107,8 +100,6 @@
 
             //  days + " dni <% if (timer.info) { %> <%=timer.info%> <% } %>"
 
-            var years;
-            var months;
             var days;
             var hrs;
             var min;
@@ -121,11 +112,7 @@
                 var diff = Math.abs(Math.floor(diff));  
 
                 days = Math.floor(diff/(24*60*60));
-                months = Math.floor(days/30);
-                years = Math.floor(months/12);
                 sec = diff - days * 24*60*60;
-                days = days - months * 30;
-                months = months - years * 12;
 
                 hrs = Math.floor(sec/(60*60));
                 sec = sec - hrs * 60*60;
