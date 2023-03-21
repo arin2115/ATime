@@ -54,55 +54,7 @@
             <iframe id="previewframe" src="/timer/preview/nazwa/data/info" style="visibility: hidden;"></iframe>
         <% } %>
 
-        <script src = "/socket.io/socket.io.js"></script>
-
         <script>
-            const socket = io();
-
-            socket.on("newTimer", function (data) {
-                if (data.private) {
-                    if (data.username == "<%=username%>") {
-                        var userTimers = document.getElementById("userTimers");
-                        var newTimer = document.createElement("p");
-                        newTimer.innerHTML = "<a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a> <button style='all: unset; color: -webkit-link; text-decoration: underline; cursor: pointer;' onclick='deleteTimer(\"" + data.id + "\")'>usuń</button> | prywatny";
-                        userTimers.appendChild(newTimer);
-                    } else if (data.username == "<%=session.username%>") {
-                        window.location.reload();
-                    }
-                }
-
-                if (!data.private && data.username == "<%=username%>" || data.username == "<%=session.username%>") {
-                    var userTimers = document.getElementById("userTimers");
-                    var newTimer = document.createElement("p");
-                    newTimer.innerHTML = "<a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + `</a> | publiczny ${data.featured ? "| wyróżniony" : ""}`;
-                    userTimers.appendChild(newTimer);
-                }
-            });
-
-            socket.on("timerDeleted", function (data) {
-                if (data.private) {
-                    if (data.username == "<%=username%>") {
-                        var userTimers = document.getElementById("userTimers");
-                        var timer = document.querySelector("a[href='/timer/" + data.id + "']").parentNode;
-                        userTimers.removeChild(timer);
-                    }
-                }
-                
-                if (!data.private && data.username == "<%=username%>" || data.username == "<%=session.username%>") {
-                    var userTimers = document.getElementById("userTimers");
-                    var timer = document.querySelector("a[href='/timer/" + data.id + "']").parentNode;
-                    userTimers.removeChild(timer);
-                }
-            });
-
-            socket.on("privateTimer", function (data) {
-                if (data.username == "<%=username%>") {
-                    var userTimers = document.getElementById("userTimers");
-                    var timer = document.querySelector("a[href='/timer/" + data.id + "']").parentNode;
-                    timer.innerHTML = "<a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a> <button style='all: unset; color: -webkit-link; text-decoration: underline; cursor: pointer;' onclick='deleteTimer(\"" + data.id + "\")'>usuń</button> | prywatny";
-                }
-            });
-
             var lastPreviewTitle = "";
             var lastPreviewDate = "";
             var lastPreviewInfo = "";

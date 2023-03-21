@@ -38,40 +38,7 @@
             <% }) %>
         </div>
 
-        <script src = "/socket.io/socket.io.js"></script>
-
         <script>
-            const socket = io();
-
-            socket.on("newTimer", function (data) {
-                if (!data.private) {
-                    if (data.featured) {
-                        document.getElementById("featuredTimers").innerHTML += "<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a></p>";
-                    } else {
-                        document.getElementById("publicTimers").innerHTML += "<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a></p>";
-                    }
-                }
-            });
-
-            socket.on("timerDeleted", function (data) {
-                console.log(data)
-                if (!data.private) {
-                    if (data.featured) {
-                        document.getElementById("featuredTimers").innerHTML = document.getElementById("featuredTimers").innerHTML.replace(`<p><a href="/timer/` + data.id + `">` + data.title + " - " + data.time + "</a></p>", "");
-                    } else {
-                        document.getElementById("publicTimers").innerHTML = document.getElementById("publicTimers").innerHTML.replace(`<p><a href="/timer/` + data.id + `">` + data.title + " - " + data.time + "</a></p>", "");
-                    }
-                }
-            });
-
-            socket.on("privateTimer", function (data) {
-                if (data.featured) {
-                    document.getElementById("featuredTimers").innerHTML = document.getElementById("featuredTimers").innerHTML.replace("<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a></p>", "");
-                } else {
-                    document.getElementById("publicTimers").innerHTML = document.getElementById("publicTimers").innerHTML.replace("<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a></p>", "");
-                }
-            });
-
             function logout() {
                 var data = {
                     method: 'POST',

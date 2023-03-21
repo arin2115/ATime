@@ -1,4 +1,3 @@
-const io = require('../index').io;
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
 
@@ -36,24 +35,13 @@ async function createTimer(data) {
         }
     }
 
-    io.emit("newTimer", socketData);
-
     return timerId;
 }
 
 async function deleteTimer(id) {
     await db.get(`timers`)
         .then(async (data) => {
-            var timer = data.find(t => t.id == id);
-
             await db.pull(`timers`, t => t.id == id);
-
-            if (timer.private) {
-                io.emit("timerDeleted", id);
-            } else {
-                io.emit("timerDeleted", {private: timer.private, title: timer.title, time: timer.time, featured: timer.featured, id: id, username: timer.username});
-            }
-
         })
         .catch((err) => {
             console.error(err);
@@ -78,29 +66,6 @@ async function featureTimer(id) {
                 featured: true,
                 created: timer.created
             }
-
-            var socketData = {}
-
-            if (timer.private) {
-                socketData = {
-                    username: timer.username,
-                    private: timer.private
-                }
-            } else {
-                socketData = {
-                    id: timer.id,
-                    title: timer.title,
-                    time: timer.time,
-                    info: timer.info,
-                    username: timer.username,
-                    private: timer.private,
-                    featured: true,
-                    created: timer.created
-                }
-            }
-        
-            io.emit("timerDeleted", {id: id});
-            io.emit("newTimer", socketData);
 
             await db.push(`timers`, newTimer);
         })
@@ -129,29 +94,6 @@ async function unfeatureTimer(id) {
             }
 
             await db.push(`timers`, newTimer);
-
-            var socketData = {}
-
-            if (timer.private) {
-                socketData = {
-                    username: timer.username,
-                    private: timer.private
-                }
-            } else {
-                socketData = {
-                    id: timer.id,
-                    title: timer.title,
-                    time: timer.time,
-                    info: timer.info,
-                    username: timer.username,
-                    private: timer.private,
-                    featured: false,
-                    created: timer.created
-                }
-            }
-        
-            io.emit("timerDeleted", {id: id});
-            io.emit("newTimer", socketData);
         })
         .catch((err) => {
             console.error(err);
@@ -178,8 +120,6 @@ async function publicTimer(id) {
             }
 
             await db.push(`timers`, newTimer);
-        
-            io.emit("newTimer", newTimer);
         })
         .catch((err) => {
             console.error(err);
@@ -206,8 +146,6 @@ async function privateTimer(id) {
             }
 
             await db.push(`timers`, newTimer);
-
-            io.emit("privateTimer", {id: id, title: timer.title, time: timer.time, featured: timer.featured, username: timer.username});
         })
         .catch((err) => {
             console.error(err);

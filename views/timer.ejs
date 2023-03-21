@@ -37,17 +37,7 @@
             <span class="timeel">od <%=timer.time.split("-")[2]%>.<%=timer.time.split("-")[1]%>.<%=timer.time.split("-")[0]%></span>
         </div>
 
-        <script src = "/socket.io/socket.io.js"></script>
-
         <script>
-            const socket = io();
-
-            socket.on("timerDeleted", function (data) {
-                if (data.id == "<%=timer.id%>") {
-                    window.location.href = "/";
-                }
-            });
-
             window.onload = function() {
                 countUpFromTime("<%=timer.time%>T00:00:00", 'countup2');
             };

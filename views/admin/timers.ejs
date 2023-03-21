@@ -37,31 +37,7 @@
             <% }) %>
         </div>
 
-        <script src = "/socket.io/socket.io.js"></script>
-
         <script>
-            const socket = io();
-
-            socket.on("newTimer", function (data) {
-                if (data.featured) {
-                    document.getElementById("featuredTimers").innerHTML += "<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a> <button onclick='deleteTimer(" + data.id + ")'>usuń</button> <button onclick='unfeatureTimer(" + data.id + ")'>nie wyróżniaj</button> <button onclick='privateTimer(" + data.id + ")'>ukryj</button></p>";
-                } else if (data.private) {
-                    document.getElementById("privateTimers").innerHTML += "<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a> <button onclick='deleteTimer(" + data.id + ")'>usuń</button> <button onclick='featureTimer(" + data.id + ")'>wyróżnij</button> <button onclick='publicTimer(" + data.id + ")'>upublicznij</button></p>";
-                } else {
-                    document.getElementById("publicTimers").innerHTML += "<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a> <button onclick='deleteTimer(" + data.id + ")'>usuń</button> <button onclick='featureTimer(" + data.id + ")'>wyróżnij</button> <button onclick='privateTimer(" + data.id + ")'>ukryj</button></p>";
-                }
-            });
-
-            socket.on("timerDeleted", function (data) {
-                if (data.feautred) {
-                    document.getElementById("featuredTimers").innerHTML = document.getElementById("featuredTimers").innerHTML.replace("<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a> <button onclick='deleteTimer(" + data.id + ")'>usuń</button> <button onclick='unfeatureTimer(" + data.id + ")'>nie wyróżniaj</button> <button onclick='privateTimer(" + data.id + ")'>ukryj</button></p>", "");
-                } else if (data.private) {
-                    document.getElementById("privateTimers").innerHTML = document.getElementById("privateTimers").innerHTML.replace("<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a> <button onclick='deleteTimer(" + data.id + ")'>usuń</button> <button onclick='featureTimer(" + data.id + ")'>wyróżnij</button> <button onclick='publicTimer(" + data.id + ")'>upublicznij</button></p>", "");
-                } else {
-                    document.getElementById("publicTimers").innerHTML = document.getElementById("publicTimers").innerHTML.replace("<p><a href='/timer/" + data.id + "'>" + data.title + " - " + data.time + "</a> <button onclick='deleteTimer(" + data.id + ")'>usuń</button> <button onclick='featureTimer(" + data.id + ")'>wyróżnij</button> <button onclick='privateTimer(" + data.id + ")'>ukryj</button></p>", "");
-                }
-            });
-
             function logout() {
                 var data = {
                     method: 'POST',
