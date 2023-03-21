@@ -88,8 +88,6 @@
                 targetDate = new Date("<%=timer.time%>T00:00:00");   
                 timeToLaunch();
 
-                numberTransition('#years .number', years, 1000, 'easeOutQuad');
-                numberTransition('#months .number', months, 1000, 'easeOutQuad');
                 numberTransition('#days .number', days, 1000, 'easeOutQuad');
                 numberTransition('#hours .number', hrs, 1000, 'easeOutQuad');
                 numberTransition('#minutes .number', min, 1000, 'easeOutQuad');
@@ -124,8 +122,6 @@
             function countDownTimer(){ 
                 timeToLaunch();
                 
-                $( "#years .number" ).text(years);
-                $( "#months .number" ).text(months);
                 $( "#days .number" ).text(days);
                 $( "#hours .number" ).text(hrs);
                 $( "#minutes .number" ).text(min);
