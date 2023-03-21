@@ -32,7 +32,8 @@
             <% timers.forEach(timer => { %>
                 <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.time%></a> | <%=timer.private ? "prywatny" : "publiczny"%> <%=timer.featured ? "| wyróżniony" : ""%> </p>
                 <% if (!username) { %>
-                    | <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <%=timer.private ? "<button onclick='publicTimer(`" + timer.id + "`)'>upublicznij</button>" : "<button onclick='privateTimer(`" + timer.id + "`)'>uprywatnij</button>"%>
+                    | <button onclick="deleteTimer('<%=timer.id%>')">usuń</button>
+                    <%=timer.private ? "<button onclick='publicTimer(timer.id)'>upublicznij</button>" : "<button onclick='privateTimer(`" + timer.id + "`)'>uprywatnij</button>"%>
                 <% } %>
             <% }) %>
         </div>
