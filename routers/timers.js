@@ -1,11 +1,17 @@
+const { QuickDB } = require("quick.db");
+const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+
 const utils = require('../utils/helpers.js');
 const timer = require('../utils/timers.js');
-const express = require('express');
+const config = require('../config');
+
 const router = express.Router();
-const session = require('express-session');
-const { QuickDB } = require("quick.db");
 var db = new QuickDB();
-var config = require('../config');
+
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
 
 router.use(session({
     secret: 'keyboard cat XDDDDDDDD soundenginebestratjebiecimatkeelo',
