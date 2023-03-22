@@ -56,7 +56,8 @@
 
             <p id="err" style="color: red"></p>
             <input type="text" placeholder="Nazwa licznika" id="createtimer-title">
-            <input type="date" placeholder="Data licznika" id="createtimer-date">
+            <input type="date" placeholder="Data" id="createtimer-date">
+            <input type="time" placeholder="Godzina" id="createtimer-time">
             <input type="text" placeholder="Info po ilości dni" id="createtimer-info">
             prywatny:
             <input type="checkbox" id="createtimer-private">
@@ -68,12 +69,13 @@
             <button onclick="createTimer()">Stwórz licznik</button>
             <button onclick="preview()">Podgląd</button>
             <br><br>
-            <iframe id="previewframe" src="/timer/preview/nazwa/data/info" style="visibility: hidden;"></iframe>
+            <iframe id="previewframe" src="/timer/preview/nazwa/data/godzina/info" style="visibility: hidden;"></iframe>
         <% } %>
 
         <script>
             var lastPreviewTitle = "";
             var lastPreviewDate = "";
+            var lastPreviewTime = "";
             var lastPreviewInfo = "";
 
             var isAdmin = "<%=isAdmin%>";
@@ -88,14 +90,16 @@
                 var err = document.getElementById("err");
                 var title = document.getElementById("createtimer-title").value;
                 var date = document.getElementById("createtimer-date").value;
+                var time = document.getElementById("createtimer-time").value;
                 var info = document.getElementById("createtimer-info").value;
 
-                if (title == "" || date == "") {
-                    err.innerHTML = "Wypełnij tytuł oraz datę!";
+                if (title == "" || date == "" || time == "") {
+                    err.innerHTML = "Wypełnij tytuł, datę oraz godzinę!";
                     previewframe.src = "";
                     previewframe.style.visibility = "hidden";
                     lastPreviewTitle = "";
                     lastPreviewDate = "";
+                    lastPreviewTime = "";
                     lastPreviewInfo = "";
 
                     return;
@@ -106,15 +110,17 @@
                     previewframe.style.visibility = "hidden";
                     lastPreviewTitle = "";
                     lastPreviewDate = "";
+                    lastPreviewTime = "";
                     lastPreviewInfo = "";
                     return;
                 }
 
                 lastPreviewTitle = title;
                 lastPreviewDate = date;
+                lastPreviewTime = time;
                 lastPreviewInfo = info;
 
-                previewframe.src = "/timer/preview/" + document.getElementById("createtimer-title").value + "/" + document.getElementById("createtimer-date").value + "/" + document.getElementById("createtimer-info").value;
+                previewframe.src = "/timer/preview/" + document.getElementById("createtimer-title").value + "/" + document.getElementById("createtimer-date").value + "/" + document.getElementById("createtimer-time").value + "/" + document.getElementById("createtimer-info").value;
                 previewframe.style.visibility = "visible";
             }
 
@@ -143,10 +149,11 @@
             function createTimer() {
                 var title = document.getElementById("createtimer-title").value;
                 var date = document.getElementById("createtimer-date").value;
+                var time = document.getElementById("createtimer-time").value;
                 var info = document.getElementById("createtimer-info").value;
 
-                if (title == "" || date == "") {
-                    err.innerHTML = "Wypełnij tytuł oraz datę!";
+                if (title == "" || date == "" || time == "") {
+                    err.innerHTML = "Wypełnij tytuł, datę oraz godzinę!";
                     return;
                 }
 
@@ -162,7 +169,8 @@
                     },
                     body: JSON.stringify({
                         "title": document.getElementById("createtimer-title").value,
-                        "time": document.getElementById("createtimer-date").value,
+                        "date": document.getElementById("createtimer-date").value,
+                        "time": document.getElementById("createtimer-time").value,
                         "info": document.getElementById("createtimer-info").value,
                         "private": document.getElementById("createtimer-private").checked,
                         "featured": featured

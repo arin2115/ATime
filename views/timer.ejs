@@ -47,18 +47,20 @@
         </style>
     </head>
     <body>
-        <% if (!session.logged) { %> 
-            <button id="submit" onclick="window.location.href='/'">strona główna</button> <button onclick="window.location.href='/login'">zaloguj się</button> <button onclick="window.location.href='/register'">zarejestruj się</button>
-        <% } else { %>
-            <p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <button onclick="window.location.href='/user'">profil</button> <% if (isAdmin) { %> <button onclick="window.location.href='/admin'">admin panel</button> <% } %></p>
-        <% } %>
-    
-        <% if (!session.logged) { %> <br><br> <% } %>
+        <center>
+            <% if (!session.logged) { %> 
+                <button id="submit" onclick="window.location.href='/'">strona główna</button> <button onclick="window.location.href='/login'">zaloguj się</button> <button onclick="window.location.href='/register'">zarejestruj się</button>
+            <% } else { %>
+                <p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <button onclick="window.location.href='/user'">profil</button> <% if (isAdmin) { %> <button onclick="window.location.href='/admin'">admin panel</button> <% } %></p>
+            <% } %>
+        
+            <% if (!session.logged) { %> <br><br> <% } %>
 
-        <div class="countup" id="countup2">
-            <span class="timeel"><%=timer.title%></span>
-            <span class="timeel">od <%=timer.time.split("-")[2]%>.<%=timer.time.split("-")[1]%>.<%=timer.time.split("-")[0]%></span>
-        </div>
+            <div class="countup" id="countup2">
+                <span class="timeel"><%=timer.title%></span>
+                <span class="timeel">od <%=timer.time.split("-")[2]%>.<%=timer.time.split("-")[1]%>.<%=timer.time.split("-")[0]%></span>
+            </div>
+        </center>
 
         <ul id="countdown">
             <li id="days">
@@ -67,15 +69,15 @@
               </li>
               <li id="hours">
                 <div class="number">00</div>
-                <div class="label">Hours</div>
+                <div class="label">Godzin</div>
               </li>
               <li id="minutes">
                 <div class="number">00</div>
-                <div class="label">Minutes</div>
+                <div class="label">Minut</div>
               </li>
               <li id="seconds">
                 <div class="number">00</div>
-                <div class="label">Seconds</div>
+                <div class="label">Sekund</div>
               </li>
         </ul>
 
@@ -84,8 +86,7 @@
         <script>
             var targetDate;
             window.onload = function() {
-                // countUpFromTime("<%=timer.time%>T00:00:00", 'countup2');
-                targetDate = new Date("<%=timer.time%>T00:00:00");   
+                targetDate = new Date("<%=timer.date%>T<%=timer.time%>");   
                 timeToLaunch();
 
                 numberTransition('#days .number', days, 1000, 'easeOutQuad');

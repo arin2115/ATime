@@ -34,12 +34,13 @@ router.get('/:id', async (req, res) => {
         });
 })
 
-router.get('/preview/:title/:date/:info', async (req, res) => {
+router.get('/preview/:title/:date/:time/:info', async (req, res) => {
     var isAdmin = await utils.isAdmin(req.session);
 
     var timer = {
         title: req.params.title,
-        time: req.params.date,
+        date: req.params.date,
+        time: req.params.time,
         info: req.params.info
     }
 
@@ -58,6 +59,7 @@ router.post('/create', async (req, res) => {
 
     var data = {
         title: req.body.title,
+        date: req.body.date,
         time: req.body.time,
         info: req.body.info,
         username: req.session.username,
