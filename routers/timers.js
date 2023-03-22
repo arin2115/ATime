@@ -34,7 +34,7 @@ router.get('/:id', async (req, res) => {
         });
 })
 
-router.get('/preview/:title/:date/:date/:time/:display', async (req, res) => {
+router.get('/preview/:title/:date/:time/:display', async (req, res) => {
     var isAdmin = await utils.isAdmin(req.session);
 
     var timer = {
