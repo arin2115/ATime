@@ -34,14 +34,14 @@ router.get('/:id', async (req, res) => {
         });
 })
 
-router.get('/preview/:title/:date/:time/:info', async (req, res) => {
+router.get('/preview/:title/:date/:date/:time/:display', async (req, res) => {
     var isAdmin = await utils.isAdmin(req.session);
 
     var timer = {
         title: req.params.title,
         date: req.params.date,
         time: req.params.time,
-        info: req.params.info
+        display: req.params.display
     }
 
     return res.render('timer', {session: req.session, timer: timer, isAdmin: isAdmin, config: config});
@@ -61,7 +61,7 @@ router.post('/create', async (req, res) => {
         title: req.body.title,
         date: req.body.date,
         time: req.body.time,
-        info: req.body.info,
+        display: req.body.display,
         username: req.session.username,
         private: req.body.private,
         featured: featured
