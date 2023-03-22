@@ -58,14 +58,14 @@
 
             <div class="countup" id="countup2">
                 <span class="timeel"><%=timer.title%></span>
-                <span class="timeel">od <%=timer.time.split("-")[2]%>.<%=timer.time.split("-")[1]%>.<%=timer.time.split("-")[0]%></span>
+                <span class="timeel">od <%=timer.date.split("-")[2]%>.<%=timer.date.split("-")[1]%>.<%=timer.date.split("-")[0]%> <%=timer.time%></span>
             </div>
         </center>
 
         <ul id="countdown">
             <li id="days">
                 <div class="number">00</div>
-                <div class="label">Days</div>
+                <div class="label">Dni</div>
               </li>
               <li id="hours">
                 <div class="number">00</div>
@@ -127,8 +127,8 @@
                 $( "#hours .number" ).text(hrs);
                 $( "#minutes .number" ).text(min);
                 $( "#seconds .number" ).text(sec);
-                
-                setTimeout(countDownTimer,1000);
+
+                setTimeout(countDownTimer, 1000);
             }
 
             function numberTransition(id, endPoint, transitionDuration, transitionEase){
