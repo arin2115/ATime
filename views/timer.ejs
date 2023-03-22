@@ -128,6 +128,12 @@
                 $( "#minutes .number" ).text(min);
                 $( "#seconds .number" ).text(sec);
 
+                if (days == 0) $( "#days" ).hide();
+                else $( "#days" ).show();
+
+                if (hrs == 0) $( "#hours" ).hide();
+                else $( "#hours" ).show();
+
                 setTimeout(countDownTimer, 1000);
             }
 
