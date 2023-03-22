@@ -45,11 +45,11 @@
                 text-transform: uppercase;
             }
 
-            .timeel {
+            #countdown #info {
                 font-family: "Arial Narrow", Arial, sans-serif;
                 font-weight: bold;
                 text-align: center;
-                font-size: 10px;
+                font-size: 1.1vw;
             }
         </style>
     </head>
@@ -63,12 +63,10 @@
         
             <% if (!session.logged) { %> <br><br> <% } %>
 
-            <div class="countup" id="countup2">
-                <span class="timeel"><%=timer.display.split("{nazwa}").join(timer.title).split("{data}").join(timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]).split("{godzina}").join(timer.time)%></span>
-            </div>
         </center>
 
         <ul id="countdown">
+            <div id="info"><%=timer.display.split("{nazwa}").join(timer.title).split("{data}").join(timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]).split("{godzina}").join(timer.time)%></div>
             <li id="days">
                 <div class="number">00</div>
                 <div class="label">Dni</div>
