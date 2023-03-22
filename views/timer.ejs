@@ -89,6 +89,12 @@
                 targetDate = new Date("<%=timer.date%>T<%=timer.time%>");   
                 timeToLaunch();
 
+                if (days == 0) $( "#days" ).hide();
+                else $( "#days" ).show();
+
+                if (hrs == 0) $( "#hours" ).hide();
+                else $( "#hours" ).show();
+
                 numberTransition('#days .number', days, 1000, 'easeOutQuad');
                 numberTransition('#hours .number', hrs, 1000, 'easeOutQuad');
                 numberTransition('#minutes .number', min, 1000, 'easeOutQuad');
@@ -120,19 +126,19 @@
                 sec = sec - min * 60;
             }
 
-            function countDownTimer(){ 
+            function countDownTimer() { 
                 timeToLaunch();
-                
-                $( "#days .number" ).text(days);
-                $( "#hours .number" ).text(hrs);
-                $( "#minutes .number" ).text(min);
-                $( "#seconds .number" ).text(sec);
 
                 if (days == 0) $( "#days" ).hide();
                 else $( "#days" ).show();
 
                 if (hrs == 0) $( "#hours" ).hide();
                 else $( "#hours" ).show();
+                
+                $( "#days .number" ).text(days);
+                $( "#hours .number" ).text(hrs);
+                $( "#minutes .number" ).text(min);
+                $( "#seconds .number" ).text(sec);
 
                 setTimeout(countDownTimer, 1000);
             }
