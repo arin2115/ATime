@@ -7,8 +7,6 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 
         <style>
-            @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
-
             html {
                 box-sizing: border-box;
             }
@@ -19,14 +17,10 @@
 
             html {
                 position: relative;
-                min-height: 100%;
-                width: 100%;
             }
 
             body {
                 background-color: #000;
-                margin: 0 0 100px;
-                padding: 25px;
                 width: 100%;
             }
 
@@ -41,7 +35,6 @@
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                height: 60vh;
                 -ms-transform: translate(-50%, -50%);
                 transform: translate(-50%, -50%);
                 color: white;
@@ -80,97 +73,6 @@
                 text-align: center;
                 font-size: 1.1vw;
             }
-
-            .footer-distributed {
-                display: inline-block;
-                background-color: #292c2f;
-                box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
-                box-sizing: border-box;
-                width: 100%;
-                text-align: left;
-                font: normal 16px sans-serif;
-                left: 0;
-                bottom: 0;
-                height: 100px;
-                width: 100%;
-                overflow: hidden;
-            }
-
-            .footer-distributed .footer-left p {
-                color: #8f9296;
-                font-size: 14px;
-                margin: 0;
-            }
-            /* Footer links */
-
-            .footer-distributed p.footer-links {
-                font-size: 18px;
-                font-weight: bold;
-                color: #ffffff;
-                margin: 0 0 10px;
-                padding: 0;
-                transition: ease .25s;
-            }
-
-            .footer-distributed p.footer-links a {
-                display: inline-block;
-                line-height: 1.8;
-                text-decoration: none;
-                color: inherit;
-                transition: ease .25s;
-            }
-
-            .footer-distributed .footer-links a:before {
-                content: "·";
-                font-size: 20px;
-                left: 0;
-                color: #fff;
-                display: inline-block;
-                padding-right: 5px;
-            }
-
-            .footer-distributed .footer-links .link-1:before {
-                content: none;
-            }
-
-            .footer-distributed .footer-right {
-                float: right;
-                margin-top: 6px;
-                max-width: 180px;
-            }
-
-            .footer-distributed .footer-right a {
-                display: inline-block;
-                width: 35px;
-                height: 35px;
-                background-color: #33383b;
-                border-radius: 2px;
-                font-size: 20px;
-                color: #ffffff;
-                text-align: center;
-                line-height: 35px;
-                margin-left: 3px;
-                transition:all .25s;
-            }
-
-            .footer-distributed .footer-right a:hover{transform:scale(1.1); -webkit-transform:scale(1.1);}
-
-            .footer-distributed p.footer-links a:hover{text-decoration:underline;}
-
-            /* Media Queries */
-
-            @media (max-width: 600px) {
-            .footer-distributed .footer-left, .footer-distributed .footer-right {
-                text-align: center;
-            }
-            .footer-distributed .footer-right {
-                float: none;
-                margin: 0 auto 20px;
-            }
-            .footer-distributed .footer-left p.footer-links {
-                line-height: 1.8;
-            }
-            }
         </style>
     </head>
     <body>
@@ -193,32 +95,27 @@
                     <div class="number">00</div>
                     <div class="label">Sekund</div>
                   </li>
+                  <div id="buttons">
+                        <% if (!session.logged) { %>
+                            <a class="link-1" href="/">Strona główna</a>
+                            <a href="/login">Zaloguj się</a>
+                            <a href="/register">Zarejestruj się</a>
+                        <% } else { %>
+                            <p style="margin-right: 5px;">Witaj <%=session.username%>!</p>
+                            <a href="/">Strona główna</a>
+                            <a onclick="logout()">Wyloguj się</a>
+                            <a href="/user">Profil</a>
+                            <% if (isAdmin) { %> <a href="/admin">Admin panel</a> <% } %>
+                        <% } %>
+
+                        <p>ATime © 2023 <a href="https://github.com/arin2115/ATime"><i class="fa fa-github"></i></a></p>
+                  </div>
             </ul>
         </div>
 
-        <footer class="footer-distributed">
 			<div class="footer-right">
 				<a href="https://github.com/arin2115/ATime"><i class="fa fa-github"></i></a>
 			</div>
-
-			<div class="footer-left">
-				<p class="footer-links">
-                    <% if (!session.logged) { %>
-                        <p style="margin-right: 5px;">Witaj <%=session.username%>!</p>
-                        <a class="link-1" href="/">Strona główna</a>
-                        <a href="/login">Zaloguj się</a>
-                        <a href="/register">Zarejestruj się</a>
-                    <% } else { %>
-                        <a href="/">Strona główna</a>
-                        <a onclick="logout()">Wyloguj się</a>
-                        <a href="/user">Profil</a>
-                        <% if (isAdmin) { %> <a href="/admin">Admin panel</a> <% } %>
-                    <% } %>
-				</p>
-
-				<p>ATime © 2023</p>
-			</div>
-		</footer>
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
