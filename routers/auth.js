@@ -58,6 +58,8 @@ router.post('/:type', async (req, res) => {
 
         await sendMail(req.body.email, "ATime verification", ``, `<p><b>Hi ${username}!</b></p><p>Verify your account <a href="https://atime.arindev.tech/auth/verify/${verificationCode}">here</a></p>`);
         
+        console.log(password);
+
         await db.set(`email_${Buffer.from(req.body.email, 'utf-8').toString('base64')}`, {username: username});
         await db.set(`user_${username}`, {username: username, email: Buffer.from(req.body.email, 'utf-8').toString('base64'), password: utils.hash(password), banned: false, admin: false, verified: false, verificationCode: verificationCode});
 
