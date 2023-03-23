@@ -19,6 +19,20 @@
                 color: white;
             }
 
+            #container {
+                height: 200px;
+                position: relative;
+                border: 3px solid green;
+            }
+
+            #countdown {
+                margin: 0;
+                position: absolute;
+                top: 50%;
+                -ms-transform: translateY(-50%);
+                transform: translateY(-50%);
+            }
+
             ul#countdown {
                 top: 50%;
                 margin: 0 auto;
@@ -65,25 +79,27 @@
 
         </center>
 
-        <ul id="countdown">
-            <div id="info"><%=timer.display.split("{nazwa}").join(timer.title).split("{data}").join(timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]).split("{godzina}").join(timer.time)%></div>
-            <li id="days">
-                <div class="number">00</div>
-                <div class="label">Dni</div>
-              </li>
-              <li id="hours">
-                <div class="number">00</div>
-                <div class="label">Godzin</div>
-              </li>
-              <li id="minutes">
-                <div class="number">00</div>
-                <div class="label">Minut</div>
-              </li>
-              <li id="seconds">
-                <div class="number">00</div>
-                <div class="label">Sekund</div>
-              </li>
-        </ul>
+        <div id="center">
+            <ul id="countdown">
+                <div id="info"><%=timer.display.split("{nazwa}").join(timer.title).split("{data}").join(timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]).split("{godzina}").join(timer.time)%></div>
+                <li id="days">
+                    <div class="number">00</div>
+                    <div class="label">Dni</div>
+                  </li>
+                  <li id="hours">
+                    <div class="number">00</div>
+                    <div class="label">Godzin</div>
+                  </li>
+                  <li id="minutes">
+                    <div class="number">00</div>
+                    <div class="label">Minut</div>
+                  </li>
+                  <li id="seconds">
+                    <div class="number">00</div>
+                    <div class="label">Sekund</div>
+                  </li>
+            </ul>
+        </div>
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
