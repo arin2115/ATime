@@ -21,7 +21,7 @@ router.use(session({
 router.get('/verify/:id', async (req, res) => {
     await db.all()
         .then(async data => {
-            var user = data.filter(u => Wu.value.verificationCode == req.params.id)[0];
+            var user = data.filter(u => u.value.verificationCode == req.params.id)[0];
 
             if (!user) return res.redirect('/');
             if (user.value.verified) return res.redirect('/');
