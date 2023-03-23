@@ -113,4 +113,4 @@ function compare(plain, hashed) {
 }
 
 
-module.exports = { initMail, isLogged, isAdmin, validateApiKey, isKeyBanned, makeid, error, setIfNotExists, hash, compare }
+module.exports = { initMail, sendMail, isLogged, isAdmin, validateApiKey, isKeyBanned, makeid, error, setIfNotExists, hash, compare }
