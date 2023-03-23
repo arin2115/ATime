@@ -11,12 +11,14 @@ var db = new QuickDB();
 const pages = require('./routers/pages');
 const auth = require('./routers/auth');
 const api = require('./routers/api');
+const user = require('./routers/user');
 const admin = require('./routers/admin');
 const timers = require('./routers/timers');
 
 app.use('/', pages);
 app.use('/auth', auth);
 app.use('/api', api);
+app.use('/user', user);
 app.use('/admin', admin);
 app.use('/timer', timers);
 
