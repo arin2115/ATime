@@ -2,7 +2,15 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Timer - ATime</title>
+        <meta property="og:title" content="Licznik - ATime" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://atime.arindev.tech" />
+        <meta property="og:description" content='<%=timer.display
+        .split("{nazwa}").join(timer.title)
+        .split("{data}").join(timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0])
+        .split("{godzina}").join(timer.time)%> użytkownika <%=timer.username%>' />
+
+        <title>Licznik - ATime</title>
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 
