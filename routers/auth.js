@@ -56,7 +56,7 @@ router.post('/:type', async (req, res) => {
 
         var verificationCode = utils.makeid(16, "normal");
 
-        await sendMail(req.body.email, "ATime verification", ``, `<p><b>Hi ${username}!</b></p><p>Verify your account <a href="https://atime.arindev.tech/auth/verify/${verificationCode}">here</a></p>`);
+        await utils.sendMail(req.body.email, "ATime verification", ``, `<p><b>Hi ${username}!</b></p><p>Verify your account <a href="https://atime.arindev.tech/auth/verify/${verificationCode}">here</a></p>`);
         
         console.log(password);
 
