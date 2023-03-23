@@ -65,20 +65,18 @@
                 text-align: center;
                 font-size: 1.1vw;
             }
+
+            #footer {
+                position: fixed;
+                padding: 10px 10px 0px 10px;
+                bottom: 0;
+                width: 100%;
+                height: 40px;
+                background: grey;
+            }
         </style>
     </head>
     <body>
-        <center>
-            <% if (!session.logged) { %> 
-                <button id="submit" onclick="window.location.href='/'">strona główna</button> <button onclick="window.location.href='/login'">zaloguj się</button> <button onclick="window.location.href='/register'">zarejestruj się</button>
-            <% } else { %>
-                <p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <button onclick="window.location.href='/user'">profil</button> <% if (isAdmin) { %> <button onclick="window.location.href='/admin'">admin panel</button> <% } %></p>
-            <% } %>
-        
-            <% if (!session.logged) { %> <br><br> <% } %>
-
-        </center>
-
         <div id="center">
             <ul id="countdown">
                 <div id="info"><%=timer.display.split("{nazwa}").join(timer.title).split("{data}").join(timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]).split("{godzina}").join(timer.time)%></div>
@@ -99,6 +97,18 @@
                     <div class="label">Sekund</div>
                   </li>
             </ul>
+        </div>
+
+        <div id="footer">
+            <center>
+                <% if (!session.logged) { %> 
+                    <button id="submit" onclick="window.location.href='/'">strona główna</button> <button onclick="window.location.href='/login'">zaloguj się</button> <button onclick="window.location.href='/register'">zarejestruj się</button>
+                <% } else { %>
+                    <p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <button onclick="window.location.href='/user'">profil</button> <% if (isAdmin) { %> <button onclick="window.location.href='/admin'">admin panel</button> <% } %></p>
+                <% } %>
+            
+                <% if (!session.logged) { %> <br><br> <% } %>
+            </center>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
