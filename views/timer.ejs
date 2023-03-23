@@ -15,19 +15,15 @@
                 box-sizing: inherit;
             }
 
-            html {
-                position: relative;
-            }
-
+            html,
             body {
                 background-color: #000;
-                width: 100%;
+                color: white;
             }
 
             #container {
                 height: 200px;
                 position: relative;
-                color: white;
             }
 
             #countdown {
@@ -37,7 +33,6 @@
                 left: 50%;
                 -ms-transform: translate(-50%, -50%);
                 transform: translate(-50%, -50%);
-                color: white;
             }
 
             ul#countdown {
@@ -73,12 +68,31 @@
                 text-align: center;
                 font-size: 1.1vw;
             }
+
+            #countdown #buttons {
+                color: white;
+                font-family: "Arial Narrow", Arial, sans-serif;
+                font-weight: bold;
+                text-align: center;
+                font-size: 1.1vw;
+                margin-top: 10px;
+            }
+
+            #countdown #buttons a {
+                margin-right: 5px;
+            }
         </style>
     </head>
     <body>
         <div id="center">
             <ul id="countdown">
-                <div id="info"><%=timer.display.split("{nazwa}").join(timer.title).split("{data}").join(timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]).split("{godzina}").join(timer.time)%></div>
+                <div id="info">
+                    <%=timer.display
+                        .split("{nazwa}").join(timer.title)
+                        .split("{data}").join(timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0])
+                        .split("{godzina}").join(timer.time)%>
+                </div>
+                
                 <li id="days">
                     <div class="number">00</div>
                     <div class="label">Dni</div>
@@ -95,13 +109,14 @@
                     <div class="number">00</div>
                     <div class="label">Sekund</div>
                   </li>
+
                   <div id="buttons">
                         <% if (!session.logged) { %>
                             <a class="link-1" href="/">Strona główna</a>
                             <a href="/login">Zaloguj się</a>
                             <a href="/register">Zarejestruj się</a>
                         <% } else { %>
-                            <p style="margin-right: 5px;">Witaj <%=session.username%>!</p>
+                            <p>Witaj <%=session.username%>!</p>
                             <a href="/">Strona główna</a>
                             <a onclick="logout()">Wyloguj się</a>
                             <a href="/user">Profil</a>
@@ -112,10 +127,6 @@
                   </div>
             </ul>
         </div>
-
-			<div class="footer-right">
-				<a href="https://github.com/arin2115/ATime"><i class="fa fa-github"></i></a>
-			</div>
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
