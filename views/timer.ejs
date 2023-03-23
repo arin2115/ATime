@@ -15,10 +15,16 @@
                 box-sizing: inherit;
             }
 
-            html,
+            html {
+                position: relative;
+                min-height: 100%;
+            }
+
             body {
                 background-color: #000;
                 color: white;
+                margin: 0 0 100px;
+                padding: 25px;
             }
 
             #container {
@@ -69,13 +75,18 @@
             }
 
             .footer-distributed {
+                position: absolute;
                 background-color: #292c2f;
                 box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
                 box-sizing: border-box;
                 width: 100%;
                 text-align: left;
                 font: normal 16px sans-serif;
-                padding: 45px 50px;
+                left: 0;
+                bottom: 0;
+                height: 100px;
+                width: 100%;
+                overflow: hidden;
             }
 
             .footer-distributed .footer-left p {
@@ -179,15 +190,11 @@
         </div>
 
         <footer class="footer-distributed">
-
 			<div class="footer-right">
-
 				<a href="https://github.com/arin2115/ATime"><i class="fa fa-github"></i></a>
-
 			</div>
 
 			<div class="footer-left">
-
 				<p class="footer-links">
                     <% if (!session.logged) { %>
                         <p style="margin-right: 5px;">Witaj <%=session.username%>!</p>
@@ -204,18 +211,7 @@
 
 				<p>ATime © 2023</p>
 			</div>
-
 		</footer>
-
-        <div id="footer">
-            <center>
-                <% if (!session.logged) { %> 
-                    <button id="submit" onclick="window.location.href='/'">strona główna</button> <button onclick="window.location.href='/login'">zaloguj się</button> <button onclick="window.location.href='/register'">zarejestruj się</button>
-                <% } else { %>
-                    <p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <button onclick="window.location.href='/user'">profil</button> <% if (isAdmin) { %> <button onclick="window.location.href='/admin'">admin panel</button> <% } %></p>
-                <% } %>
-            </center>
-        </div>
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
