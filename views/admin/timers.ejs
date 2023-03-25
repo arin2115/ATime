@@ -110,7 +110,10 @@
             }
 
             function fixTimers() {
-                fetch('/timer/fix')
+                var data = {
+                    method: 'POST'
+                }
+                fetch('/timer/fix', data)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
