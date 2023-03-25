@@ -45,7 +45,7 @@
         <% if (timers.filter(t => t.featured).length > 0) { %> <hr> <p>Wyróżnione liczniki:</p> <% } %>
         <div id="featuredTimers">
             <% timers.filter(t => t.featured).forEach(timer => { %>
-                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="handleEdit('<%=timer.id%>')">edytuj</button> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="unfeatureTimer('<%=timer.id%>')">nie wyróżniaj</button> <button onclick="privateTimer('<%=timer.id%>')">uprywatnij</button> <% } %></p>
+                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="handleEdit('<%=timer.id%>')">edytuj</button> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="unfeatureTimer('<%=timer.id%>')">nie wyróżniaj</button> <% } %></p>
             <% }) %>
         </div>
 
@@ -59,7 +59,7 @@
         <div id="privateTimers">
             <% if (timers != "error" && timers.filter(t => !t.featured && t.private).length > 0) { %> <hr> <p>Prywatne liczniki:</p> <% } %>
             <% timers.filter(t => !t.featured && t.private).forEach(timer => { %>
-                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="handleEdit('<%=timer.id%>')">edytuj</button> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="featureTimer('<%=timer.id%>')">wyróżnij</button> <button onclick="publicTimer('<%=timer.id%>')">upublicznij</button> <% } %></p>
+                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="handleEdit('<%=timer.id%>')">edytuj</button> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="publicTimer('<%=timer.id%>')">upublicznij</button> <% } %></p>
             <% }) %>
         </div>
 
