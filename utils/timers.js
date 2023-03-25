@@ -246,7 +246,7 @@ async function stopTimer(id) {
 
 async function fixTimers() {
     await db.get(`timers`)
-        .then(async (data) => {
+        .then((data) => {
             data.forEach(async timer => {
                 await db.pull(`timers`, t => t.id == timer.id);
                 
