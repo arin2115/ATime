@@ -26,7 +26,7 @@
             }
         </style>
     </head>
-    <body>
+    <body onload="onload()">
         <script>
             var timers = [];
         </script>
@@ -121,6 +121,10 @@
 
             function addTimer(timer) {
                 timers.push(timer);
+            }
+
+            function onload() {
+                document.getElementById("cancelTimerBtn").style.display = "none";
             }
 
             function editBtns(id) {
