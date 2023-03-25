@@ -124,7 +124,7 @@
             }
 
             function onload() {
-                
+
             }
 
             function editBtns(id) {
@@ -136,6 +136,7 @@
                 document.getElementById("createtimer-display").value = timer.display;
 
                 document.getElementById("createTimerBtn").innerHTML = "Zapisz zmiany";
+                document.getElementById("createTimerBtn").onclick = "editTimer('" + id + "')";
                 document.getElementById("cancelTimerBtn").style.display = "initial";
 
                 document.getElementById("privTimerData").style.display = "none";
@@ -149,6 +150,7 @@
                 document.getElementById("createtimer-display").value = "{nazwa} od {data} {godzina}";
 
                 document.getElementById("createTimerBtn").innerHTML = "Stwórz licznik";
+                document.getElementById("createTimerBtn").onclick = "createTimer()";
                 document.getElementById("cancelTimerBtn").style.display = "none";
 
                 document.getElementById("privTimerData").style.display = "initial";
