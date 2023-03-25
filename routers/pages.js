@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/login', async (req, res) => {
-    if (!await utils.isLogged(req.session)) return res.render('login', {session: req.session, config: config});
+    if (!await utils.isLogged(req.session)) return res.render('login', {session: req.session, config: config, redirect: req.query.redirect || "/"});
     return res.redirect('/');
 });
 
@@ -39,7 +39,7 @@ router.get('/register', async (req, res) => {
 });
 
 router.get('/user', async (req, res) => {
-    if (!await utils.isLogged(req.session)) return res.redirect('/login');
+    if (!await utils.isLogged(req.session)) return res.redirect('/login?redirect=/user');
     var isAdmin = await utils.isAdmin(req.session);
 
     await db.get(`timers`)

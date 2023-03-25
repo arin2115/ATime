@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/users', async (req, res) => {
-    if (!await utils.isLogged(req.session)) return res.redirect('/login');
+    if (!await utils.isLogged(req.session)) return res.redirect('/login?redirect=/admin/users');
     var isAdmin = await utils.isAdmin(req.session);
 
     if (!isAdmin) return res.redirect('/');
@@ -47,7 +47,7 @@ router.get('/users', async (req, res) => {
 });
 
 router.get('/timers', async (req, res) => {
-    if (!await utils.isLogged(req.session)) return res.redirect('/login');
+    if (!await utils.isLogged(req.session)) return res.redirect('/login?redirect=/admin/timers');
     var isAdmin = await utils.isAdmin(req.session);
 
     if (!isAdmin) return res.redirect('/');

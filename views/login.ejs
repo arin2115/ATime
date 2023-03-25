@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+
         <meta property="og:title" content="Logowanie - ATime" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://atime.arindev.tech" />
@@ -35,7 +35,8 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            window.location.reload();
+                            var redirect = "<%=redirect%>";
+                            window.location.href = redirect;
                         } else {
                             alert(data.errors[0].message + " [" + data.errors[0].code + "]");
                         }
