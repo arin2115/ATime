@@ -49,7 +49,7 @@ router.get('/preview/:title/:date/:time/:display', async (req, res) => {
 
 router.post('/create', async (req, res) => {
     if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INVALID_SESSION", "You do not have permission to create timers."));
-    if (!req.body.title || !req.body.time) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
+    if (!req.body.title || !req.body.date && !req.body.time && !req.body.display) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
 
     var featured = false;
 
@@ -74,6 +74,39 @@ router.post('/create', async (req, res) => {
         "message": timerId,
         "success": true
     })
+})
+
+router.post('/edit', async (req, res) => {
+    if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to delete timers."));
+    if (!req.body.timerId || !req.body.title || !req.body.date || !req.body.time || !req.body.display) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
+
+    await db.get(`timers`)
+        .then(async (data) => {
+            var timer = data.find(t => t.id == req.body.timerId);
+
+            if (!timer) return res.status(400).json(utils.error("INVALID_TIMER", "Timer does not exist."));
+            if (!await utils.isAdmin(req.session) || timer.username != req.session.username) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to edit this timer."));
+
+            var data = {
+                timerId: req.body.timerId,
+                title: req.body.title,
+                date: req.body.date,
+                time: req.body.time,
+                display: req.body.display
+            }
+
+            timer.editTimer(data);
+
+            return res.status(200).json({
+                "errors": [],
+                "message": "edited",
+                "success": true
+            })                
+        })
+        .catch((err) => {
+            console.error(err);
+        }
+    );
 })
 
 router.post('/delete', async (req, res) => {

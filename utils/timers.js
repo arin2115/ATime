@@ -21,6 +21,35 @@ async function createTimer(data) {
     return timerId;
 }
 
+async function editTimer(data) {
+    if (!data.timerId || !data.title || !data.date || !data.time || !data.display) return console.error("Missing timer data.");
+
+    await db.get(`timers`)
+        .then(async (data) => {
+            var timer = data.find(t => t.id == data.timerId);
+
+            await db.pull(`timers`, t => t.id == data.timerId);
+
+            var newTimer = {
+                id: data.timerId,
+                title: data.title,
+                date: data.date,
+                time: data.time,
+                display: data.display,
+                username: timer.username,
+                private: timer.private,
+                featured: timer.featured,
+                created: timer.created
+            }
+
+            await db.push(`timers`, newTimer);
+        })
+        .catch((err) => {
+            console.error(err);
+        }
+    );
+}
+
 async function deleteTimer(id) {
     await db.get(`timers`)
         .then(async (data) => {
@@ -140,4 +169,4 @@ async function privateTimer(id) {
     );
 }
 
-module.exports = { createTimer, deleteTimer, featureTimer, unfeatureTimer, publicTimer, privateTimer }
+module.exports = { createTimer, editTimer, deleteTimer, featureTimer, unfeatureTimer, publicTimer, privateTimer }
