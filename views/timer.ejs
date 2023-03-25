@@ -153,12 +153,10 @@
             window.onload = function() {
                 var isStopped = "<%=timer.stopped%>";
                 if (isStopped == "true") {
-                    console.log("Timer is stopped");
-                    var stopDays = new Date("<%=timer.stopDays%>");
-                    var stopHours = new Date("<%=timer.stopHours%>");
-                    var stopMinutes = new Date("<%=timer.stopMinutes%>");
-                    var stopSeconds = new Date("<%=timer.stopSeconds%>");
-                    console.log(stopDays, stopHours, stopMinutes, stopSeconds);
+                    var stopDays = "<%=timer.stopDays%>";
+                    var stopHours = "<%=timer.stopHours%>";
+                    var stopMinutes = "<%=timer.stopMinutes%>";
+                    var stopSeconds = "<%=timer.stopSeconds%>";
 
                     if (stopDays == 0) $( "#days" ).hide();
                     else $( "#days" ).show();
