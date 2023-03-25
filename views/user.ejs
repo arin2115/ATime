@@ -99,7 +99,7 @@
                 <% } %>
             </div>
             <br><br>
-            <button id="createTimerBtn" onclick="createTimer()">Stwórz licznik</button>
+            <button id="createTimerBtn" onclick="handleCreate(this)" value="create">Stwórz licznik</button>
             <button id="cancelTimerBtn" onclick="cancelChanges()" style="display: none;">Anuluj zmiany</button>
             <button onclick="preview()">Podgląd</button>
             <br><br>
@@ -119,6 +119,11 @@
                 featured.style.visibility = "hidden";
             }
 
+            function handleCreate(el) {
+                if (el.value == "create") createTimer();
+                else editTimer(el.value);
+            }
+
             function addTimer(timer) {
                 timers.push(timer);
             }
@@ -136,7 +141,7 @@
                 document.getElementById("createtimer-display").value = timer.display;
 
                 document.getElementById("createTimerBtn").innerHTML = "Zapisz zmiany";
-                document.getElementById("createTimerBtn").onclick = editTimer(id);
+                document.getElementById("createTimerBtn").value = timer.id;
                 document.getElementById("cancelTimerBtn").style.display = "initial";
 
                 document.getElementById("privTimerData").style.display = "none";
@@ -150,7 +155,7 @@
                 document.getElementById("createtimer-display").value = "{nazwa} od {data} {godzina}";
 
                 document.getElementById("createTimerBtn").innerHTML = "Stwórz licznik";
-                document.getElementById("createTimerBtn").onclick = createTimer();
+                document.getElementById("createTimerBtn").value = "create";
                 document.getElementById("cancelTimerBtn").style.display = "none";
 
                 document.getElementById("privTimerData").style.display = "initial";
