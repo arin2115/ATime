@@ -24,72 +24,6 @@
             iframe {
                 border: solid 1px black;
             }
-
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1;
-                padding-top: 100px;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgb(0,0,0);
-                background-color: rgba(0,0,0,0.4);
-            }
-
-            .modal-content {
-                position: relative;
-                background-color: #fefefe;
-                margin: auto;
-                padding: 0;
-                border: 1px solid #888;
-                width: 80%;
-                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-                -webkit-animation-name: animatetop;
-                -webkit-animation-duration: 0.4s;
-                animation-name: animatetop;
-                animation-duration: 0.4s
-            }
-
-            @-webkit-keyframes animatetop {
-                from {top:-300px; opacity:0} 
-                to {top:0; opacity:1}
-            }
-
-            @keyframes animatetop {
-                from {top:-300px; opacity:0}
-                to {top:0; opacity:1}
-            }
-
-            .close {
-                color: white;
-                float: right;
-                font-size: 28px;
-                font-weight: bold;
-            }
-
-            .close:hover,
-            .close:focus {
-                color: #000;
-                text-decoration: none;
-                cursor: pointer;
-            }
-
-            .modal-header {
-                padding: 2px 16px;
-                background-color: #5cb85c;
-                color: white;
-            }
-
-            .modal-body {padding: 2px 16px;}
-
-            .modal-footer {
-                padding: 2px 16px;
-                background-color: #5cb85c;
-                color: white;
-            }
         </style>
     </head>
     <body>
@@ -110,7 +44,7 @@
             <% timers.forEach(timer => { %>
                 <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> | <%=timer.private ? "prywatny" : "publiczny"%> <%=timer.featured ? "| wyróżniony" : ""%> 
                     <% if (!username) { %>
-                        | <button onclick="openModal('<%=timer.id%>')">edytuj</button>
+                        | <button onclick="editBtns('<%=timer.id%>')">edytuj</button>
                           <button onclick="deleteTimer('<%=timer.id%>')">usuń</button>
                         <% if (timer.private) { %>
                             <button onclick='publicTimer("<%=timer.id%>")'>upublicznij</button>
@@ -137,43 +71,23 @@
             <input type="text" placeholder="Nazwa licznika" id="createtimer-title">
             <input type="date" placeholder="Data" id="createtimer-date">
             <input type="time" placeholder="Godzina" id="createtimer-time">
-            <input type="text" placeholder="Wyświetlanie" id="createtimer-display">
+            <input type="text" placeholder="Wyświetlanie" id="createtimer-display" value="{nazwa} od {data} {godzina}">
             <p>Przykład: <b>{nazwa} od {data} {godzina}</b></p>
-            prywatny:
-            <input type="checkbox" id="createtimer-private">
-            <% if (isAdmin) { %>
-                wyróżniony:
-                <input type="checkbox" id="createtimer-featured">
-            <% } %>
+            <div id="privTimerData">
+                prywatny:
+                <input type="checkbox" id="createtimer-private">
+                <% if (isAdmin) { %>
+                    wyróżniony:
+                    <input type="checkbox" id="createtimer-featured">
+                <% } %>
+            </div>
             <br><br>
-            <button onclick="createTimer()">Stwórz licznik</button>
+            <button id="createTimerBtn" onclick="createTimer()">Stwórz licznik</button>
+            <button id="cancelTimerBtn" onclick="cancelChanges()">Anuluj zmiany</button>
             <button onclick="preview()">Podgląd</button>
             <br><br>
             <iframe id="previewframe" src="/timer/preview/nazwa/data/godzina/info" style="visibility: hidden;"></iframe>
         <% } %>
-
-        <% timers.forEach(timer => { %>
-            <div id="modal-<%=timer.id%>" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal('<%=timer.id%>')">  &times;</span>
-                    <p>Some text in the Modal..</p>
-                </div>
-                <div class="modal-header">
-                    <span class="close">&times;</span>
-                    <h2>Edycja licznika <%=timer.title%></h2>
-                  </div>
-                  <div class="modal-body">
-                    <input type="text" placeholder="Nazwa licznika" id="edittimer-title-<%=timer.id%>" value="<%=timer.title%>">
-                    <input type="date" placeholder="Data" id="edittimer-date-<%=timer.id%>" value="<%=timer.date%>">
-                    <input type="time" placeholder="Godzina" id="edittimer-time-<%=timer.id%>" value="<%=timer.time%>">
-                    <input type="text" placeholder="Wyświetlanie" id="edittimer-display-<%=timer.id%>" value="<%=timer.display%>">
-                  </div>
-                  <div class="modal-footer">
-                    <button onclick="editTimer('<%=timer.id%>')">Zatwierdź zmiany</h3>
-                    <button onclick="closeModal('<%=timer.id%>')">Anuluj</h3>
-                  </div>
-            </div>
-        <% }) %>
 
         <script>
             var lastPreviewTitle = "";
@@ -188,20 +102,27 @@
                 featured.style.visibility = "hidden";
             }
 
-            function openModal(id) {
-                var modal = document.getElementById("modal-" + id);
-                modal.style.display = "block";
+            function editBtns(id) {
+                var timers = "<%=timers%>";
+                var timer = timers.find(timer => timer.id == id);
+
+                document.getElementById("createtimer-title").value = timer.title;
+                document.getElementById("createtimer-date").value = timer.date;
+                document.getElementById("createtimer-time").value = timer.time;
+                document.getElementById("createtimer-display").value = timer.display;
+
+                document.getElementById("createTimerBtn").innerHTML = "Zapisz zmiany";
+                document.getElementById("cancelTimerBtn").style.display = "initial";
             }
 
-            function closeModal(id) {
-                var modal = document.getElementById("modal-" + id);
-                modal.style.display = "none";
-            }
+            function cancelChanges() {
+                document.getElementById("createtimer-title").value = "";
+                document.getElementById("createtimer-date").value = "";
+                document.getElementById("createtimer-time").value = "";
+                document.getElementById("createtimer-display").value = "{nazwa} od {data} {godzina}";
 
-            window.onclick = function(event) {
-                if (event.target.classList.contains("modal")) {
-                    event.target.style.display = "none";
-                }
+                document.getElementById("createTimerBtn").innerHTML = "Stwórz licznik";
+                document.getElementById("cancelTimerBtn").style.display = "none";
             }
 
             function preview() {
