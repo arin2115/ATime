@@ -21,8 +21,27 @@
     <body>
         <p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <button id="submit" onclick="window.location.href='/user'">profil</button> <button id="submit" onclick="window.location.href='/admin'">admin panel</button></p>
 
+        <script>
+            var timers = [];
+        </script>
+
         <% if (timers == "error") { %> <p>Wystąpił problem z wyświetleniem liczników.</p> <% } %>
         <% if (timers.length == 0) { %> <hr> <p>Nie znaleziono żadnych liczników.</p> <% } %>
+        <% timers.forEach(timer => { %>
+            <script>
+                timers.push({
+                    id: "<%=timer.id%>",
+                    title: "<%=timer.title%>",
+                    date: "<%=timer.date%>",
+                    time: "<%=timer.time%>",
+                    display: "<%=timer.display%>",
+                    username: "<%=timer.username%>",
+                    private: "<%=timer.private%>",
+                    featured: "<%=timer.featured%>",
+                    created: "<%=timer.created%>"
+                });
+            </script>
+        <% }) %>
         <% if (timers.filter(t => t.featured).length > 0) { %> <hr> <p>Wyróżnione liczniki:</p> <% } %>
         <div id="featuredTimers">
             <% timers.filter(t => t.featured).forEach(timer => { %>
@@ -82,9 +101,18 @@
             }
 
             function handleEdit(id) {
+                var timer = timers.filter(t => t.id == id)[0];
+
+                document.getElementById("createtimer-title").value = timer.title;
+                document.getElementById("createtimer-date").value = timer.date;
+                document.getElementById("createtimer-time").value = timer.time;
+                document.getElementById("createtimer-display").value = timer.display;
+
+                document.getElementById("createTimerBtn").value = timer.id;
+                document.getElementById("cancelTimerBtn").style.display = "initial";
+
+                document.getElementById("createtext").innerHTML = "Edytuj licznik <b>" + timer.title + "</b>";
                 document.getElementById("edit").style.display = "initial";
-                document.getElementById("createtext").innerHTML = "Edytuj licznik: <b>" + id + "</b>";
-                document.getElementById("createTimerBtn").value = id;
             }
 
             function cancelChanges() {
