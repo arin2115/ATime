@@ -42,7 +42,7 @@
         <% if (timers != "error" && !timers.length > 0 && username) { %> <p>Użytkownik <%=username%> nie ma żadnych liczników.</p> <% } else if (username) { %> <p>Liczniki użytkownika <%=username%>:</p> <% } %>
         <div id="userTimers">
             <% timers.forEach(timer => { %>
-                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> | <%=timer.private ? "prywatny" : "publiczny"%> <%=timer.featured ? "| wyróżniony" : ""%> 
+                <p onload="addTimer('<%=timer%>')"><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> | <%=timer.private ? "prywatny" : "publiczny"%> <%=timer.featured ? "| wyróżniony" : ""%> 
                     <% if (!username) { %>
                         | <button onclick="editBtns('<%=timer.id%>')">edytuj</button>
                           <button onclick="deleteTimer('<%=timer.id%>')">usuń</button>
@@ -94,6 +94,7 @@
             var lastPreviewDate = "";
             var lastPreviewTime = "";
             var lastPreviewInfo = "";
+            var timers = [];
 
             var isAdmin = "<%=isAdmin%>";
 
@@ -102,12 +103,15 @@
                 featured.style.visibility = "hidden";
             }
 
+            function addTimer(timer) {
+                timers.push(timer);
+            }
+
             function editBtns(id) {
-                var timer = `<%=timers.filter(t => t.id == '${id}')[0]%>`;
-                var timers = `<%=timers%>`;
+                var timer = timers.filter(t => t.id == id)[0];
 
                 console.log(timers, timer);
-r
+
                 document.getElementById("createtimer-title").value = timer.title;
                 document.getElementById("createtimer-date").value = timer.date;
                 document.getElementById("createtimer-time").value = timer.time;
