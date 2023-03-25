@@ -265,10 +265,10 @@
             }
 
             function editTimer(id) {
-                var title = document.getElementById("edittimer-title-" + id).value;
-                var date = document.getElementById("edittimer-date-" + id).value;
-                var time = document.getElementById("edittimer-time-" + id).value;
-                var display = document.getElementById("edittimer-display-" + id).value;
+                var title = document.getElementById("createtimer-title").value;
+                var date = document.getElementById("createtimer-date").value;
+                var time = document.getElementById("createtimer-time").value;
+                var display = document.getElementById("createtimer-display").value;
 
                 if (title == "" || date == "" || time == "" || display == "") {
                     err.innerHTML = "Wypełnij tytuł, datę, godzinę oraz sposób wyświetlania!";
@@ -283,10 +283,10 @@
                     },
                     body: JSON.stringify({
                         "timerId": id,
-                        "title": document.getElementById("edittimer-title-" + id).value,
-                        "date": document.getElementById("edittimer-date-" + id).value,
-                        "time": document.getElementById("edittimer-time-" + id).value,
-                        "display": document.getElementById("edittimer-display-" + id).value,
+                        "title": title,
+                        "date": date,
+                        "time": time,
+                        "display": display,
                     })
                 }
 
