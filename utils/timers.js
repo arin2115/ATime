@@ -250,6 +250,8 @@ async function fixTimers() {
             data.forEach(async timer => {
                 await db.pull(`timers`, t => t.id == timer.id);
                 
+                console.log(timer);
+
                 var newTimer = {
                     id: timer.id,
                     title: timer.title || "Unknown",
@@ -266,6 +268,8 @@ async function fixTimers() {
                     stopSeconds: timer.stopSeconds || 0,
                     created: timer.created || Date.now()
                 }
+
+                console.log(newTimer);
 
                 await db.push(`timers`, newTimer);
             })
