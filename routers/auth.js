@@ -1,6 +1,5 @@
 const { QuickDB } = require("quick.db");
 const express = require('express');
-const session = require('express-session');
 const bodyParser = require('body-parser');
 
 const utils = require('../utils/helpers.js');
@@ -10,13 +9,6 @@ var db = new QuickDB();
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
-
-router.use(session({
-    secret: 'keyboard cat XDDDDDDDD soundenginebestratjebiecimatkeelo',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }
-}))
 
 router.get('/verify/:id', async (req, res) => {
     await db.all()

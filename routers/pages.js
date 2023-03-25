@@ -1,20 +1,11 @@
 const { QuickDB } = require("quick.db");
 const express = require('express');
-const session = require('express-session');
-const bodyParser = require('body-parser');
 
 const utils = require('../utils/helpers.js');
 const config = require('../config');
 
 const router = express.Router();
 var db = new QuickDB();
-
-router.use(session({
-    secret: 'keyboard cat XDDDDDDDD soundenginebestratjebiecimatkeelo',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }
-}))
 
 router.get('/', async (req, res) => {
     var isAdmin = await utils.isAdmin(req.session);
