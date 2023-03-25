@@ -15,6 +15,11 @@ async function createTimer(data) {
         username: data.username,
         private: data.private,
         featured: data.featured,
+        stopped: data.stopped || false,
+        stopDays: data.stopDays || 0,
+        stopHours: data.stopHours || 0,
+        stopMinutes: data.stopMinutes || 0,
+        stopSeconds: data.stopSeconds || 0,
         created: Date.now()
     });
 
@@ -39,6 +44,11 @@ async function editTimer(timerData) {
                 username: timer.username,
                 private: timer.private,
                 featured: timer.featured,
+                stopped: timer.stopped || false,
+                stopDays: timer.stopDays || 0,
+                stopHours: timer.stopHours || 0,
+                stopMinutes: timer.stopMinutes || 0,
+                stopSeconds: timer.stopSeconds || 0,
                 created: timer.created
             }
 
@@ -77,6 +87,11 @@ async function featureTimer(id) {
                 username: timer.username,
                 private: timer.private,
                 featured: true,
+                stopped: timer.stopped || false,
+                stopDays: timer.stopDays || 0,
+                stopHours: timer.stopHours || 0,
+                stopMinutes: timer.stopMinutes || 0,
+                stopSeconds: timer.stopSeconds || 0,
                 created: timer.created
             }
 
@@ -104,6 +119,11 @@ async function unfeatureTimer(id) {
                 username: timer.username,
                 private: timer.private,
                 featured: false,
+                stopped: timer.stopped || false,
+                stopDays: timer.stopDays || 0,
+                stopHours: timer.stopHours || 0,
+                stopMinutes: timer.stopMinutes || 0,
+                stopSeconds: timer.stopSeconds || 0,
                 created: timer.created
             }
 
@@ -131,6 +151,11 @@ async function publicTimer(id) {
                 username: timer.username,
                 private: false,
                 featured: timer.featured,
+                stopped: timer.stopped || false,
+                stopDays: timer.stopDays || 0,
+                stopHours: timer.stopHours || 0,
+                stopMinutes: timer.stopMinutes || 0,
+                stopSeconds: timer.stopSeconds || 0,
                 created: timer.created
             }
 
@@ -158,6 +183,11 @@ async function privateTimer(id) {
                 username: timer.username,
                 private: true,
                 featured: timer.featured,
+                stopped: timer.stopped || false,
+                stopDays: timer.stopDays || 0,
+                stopHours: timer.stopHours || 0,
+                stopMinutes: timer.stopMinutes || 0,
+                stopSeconds: timer.stopSeconds || 0,
                 created: timer.created
             }
 
@@ -169,4 +199,81 @@ async function privateTimer(id) {
     );
 }
 
-module.exports = { createTimer, editTimer, deleteTimer, featureTimer, unfeatureTimer, publicTimer, privateTimer }
+async function stopTimer(id) {
+    await db.get(`timers`)
+        .then(async (data) => {
+            var timer = data.find(t => t.id == id);
+
+            await db.pull(`timers`, t => t.id == id);
+            
+            var targetDate = new Date(timer.date + "T" + timer.time);
+            var currentDate = new Date();
+
+            var diff = (currentDate - targetDate)/1000;
+            var diff = Math.abs(Math.floor(diff));  
+
+            days = Math.floor(diff/(24*60*60));
+            sec = diff - days * 24*60*60;
+            hrs = Math.floor(sec/(60*60));
+            sec = sec - hrs * 60*60;
+            min = Math.floor(sec/(60));
+            sec = sec - min * 60;
+
+            var newTimer = {
+                id: timer.id,
+                title: timer.title,
+                date: timer.date,
+                time: timer.time,
+                display: timer.display,
+                username: timer.username,
+                private: timer.private,
+                featured: timer.featured,
+                stopped: true,
+                stopDays: days,
+                stopHours: hrs,
+                stopMinutes: min,
+                stopSeconds: sec,
+                created: timer.created
+            }
+
+            await db.push(`timers`, newTimer);
+        })
+        .catch((err) => {
+            console.error(err);
+        }
+    );
+}
+
+async function fixTimers() {
+    await db.get(`timers`)
+        .then(async (data) => {
+            data.forEach(async timer => {
+                await db.pull(`timers`, t => t.id == timer.id);
+                
+                var newTimer = {
+                    id: timer.id,
+                    title: timer.title || "Unknown",
+                    date: timer.date || "0000-00-00",
+                    time: timer.time || "00:00",
+                    display: timer.display || "{nazwa} od {data} {godzina}",
+                    username: timer.username || "Unknown",
+                    private: timer.private || false,
+                    featured: timer.featured || false,
+                    stopped: timer.stopped || false,
+                    stopDays: timer.stopDays || 0,
+                    stopHours: timer.stopHours || 0,
+                    stopMinutes: timer.stopMinutes || 0,
+                    stopSeconds: timer.stopSeconds || 0,
+                    created: timer.created || Date.now()
+                }
+
+                await db.push(`timers`, newTimer);
+            })
+        })
+        .catch((err) => {
+            console.error(err);
+        }
+    );
+}
+
+module.exports = { createTimer, stopTimer, fixTimers, editTimer, deleteTimer, featureTimer, unfeatureTimer, publicTimer, privateTimer }

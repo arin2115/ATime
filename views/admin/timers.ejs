@@ -38,6 +38,11 @@
                     username: "<%=timer.username%>",
                     private: "<%=timer.private%>",
                     featured: "<%=timer.featured%>",
+                    stopped: "<%=timer.stopped%>",
+                    stopDays: "<%=timer.stopDays%>",
+                    stopHours: "<%=timer.stopHours%>",
+                    stopMinutes: "<%=timer.stopMinutes%>",
+                    stopSeconds: "<%=timer.stopSeconds%>",
                     created: "<%=timer.created%>"
                 });
             </script>
@@ -62,6 +67,10 @@
                 <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="handleEdit('<%=timer.id%>')">edytuj</button> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="publicTimer('<%=timer.id%>')">upublicznij</button> <% } %></p>
             <% }) %>
         </div>
+
+        <% if (timers.length > 0) { %>
+            <button onclick="fixTimers()">Napraw liczniki</button>
+        <% } %>
 
         <div id="edit" style="display: none;">
             <hr>
@@ -90,6 +99,18 @@
                     },
                 }
                 fetch('/auth/logout', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function fixTimers() {
+                fetch('/timer/fix')
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {

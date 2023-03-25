@@ -76,8 +76,46 @@ router.post('/create', async (req, res) => {
     })
 })
 
+router.post('/stop', async (req, res) => {
+    if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to stop timers."));
+    if (!req.body.timerId) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
+
+    await db.get(`timers`)
+        .then(async (data) => {
+            var timerData = data.find(t => t.id == req.body.timerId);
+
+            if (!timerData) return res.status(400).json(utils.error("INVALID_TIMER", "Timer does not exist."));
+            if (!await utils.isAdmin(req.session) || timerData.username != req.session.username) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to stop this timer."));
+
+            timer.stopTimer(req.body.timerId);
+
+            return res.status(200).json({
+                "errors": [],
+                "message": "stopped",
+                "success": true
+            })                
+        })
+        .catch((err) => {
+            console.error(err);
+        }
+    );
+})
+
+router.post('/fix', async (req, res) => {
+    if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to fix timers."));
+    if (!await utils.isAdmin(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to fix timers."));
+
+    timer.fixTimers();
+
+    return res.status(200).json({
+        "errors": [],
+        "message": "fixed",
+        "success": true
+    });
+})
+
 router.post('/edit', async (req, res) => {
-    if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to delete timers."));
+    if (!await utils.isLogged(req.session)) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to edit timers."));
     if (!req.body.timerId || !req.body.title || !req.body.date || !req.body.time || !req.body.display) return res.status(400).json(utils.error("MISSING_DATA", "Missing timer data."));
 
     await db.get(`timers`)

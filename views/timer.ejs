@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+
         <meta property="og:title" content="Licznik - ATime" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://atime.arindev.tech" />
@@ -151,21 +151,40 @@
         <script>
             var targetDate;
             window.onload = function() {
-                targetDate = new Date("<%=timer.date%>T<%=timer.time%>");   
-                timeToLaunch();
+                var isStopped = "<%=timer.stopped%>";
+                if (isStopped == "true") {
+                    var stoppedDays = new Date("<%=timer.stoppedDays%>");
+                    var stoppedHours = new Date("<%=timer.stoppedHours%>");
+                    var stoppedMinutes = new Date("<%=timer.stoppedMinutes%>");
+                    var stoppedSeconds = new Date("<%=timer.stoppedSeconds%>");
 
-                if (days == 0) $( "#days" ).hide();
-                else $( "#days" ).show();
+                    if (stoppedDays == 0) $( "#days" ).hide();
+                    else $( "#days" ).show();
 
-                if (hrs == 0) $( "#hours" ).hide();
-                else $( "#hours" ).show();
+                    if (stoppedHours == 0) $( "#hours" ).hide();
+                    else $( "#hours" ).show();
 
-                numberTransition('#days .number', days, 1000, 'easeOutQuad');
-                numberTransition('#hours .number', hrs, 1000, 'easeOutQuad');
-                numberTransition('#minutes .number', min, 1000, 'easeOutQuad');
-                numberTransition('#seconds .number', sec, 1000, 'easeOutQuad');
+                    numberTransition('#days .number', stoppedDays, 1000, 'easeOutQuad');
+                    numberTransition('#hours .number', stoppedHours, 1000, 'easeOutQuad');
+                    numberTransition('#minutes .number', stoppedMinutes, 1000, 'easeOutQuad');
+                    numberTransition('#seconds .number', stoppedSeconds, 1000, 'easeOutQuad');
+                } else if (isStopped == "false") {
+                    targetDate = new Date("<%=timer.date%>T<%=timer.time%>");
+                    timeToLaunch();
 
-                setTimeout(countDownTimer,1001);
+                    if (days == 0) $( "#days" ).hide();
+                    else $( "#days" ).show();
+
+                    if (hrs == 0) $( "#hours" ).hide();
+                    else $( "#hours" ).show();
+
+                    numberTransition('#days .number', days, 1000, 'easeOutQuad');
+                    numberTransition('#hours .number', hrs, 1000, 'easeOutQuad');
+                    numberTransition('#minutes .number', min, 1000, 'easeOutQuad');
+                    numberTransition('#seconds .number', sec, 1000, 'easeOutQuad');
+
+                    setTimeout(countDownTimer,1001);
+                }
             };
 
             //  days + " dni <% if (timer.info) { %> <%=timer.info%> <% } %>"

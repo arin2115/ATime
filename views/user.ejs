@@ -55,6 +55,11 @@
                         username: "<%=timer.username%>",
                         private: "<%=timer.private%>",
                         featured: "<%=timer.featured%>",
+                        stopped: "<%=timer.stopped%>",
+                        stopDays: "<%=timer.stopDays%>",
+                        stopHours: "<%=timer.stopHours%>",
+                        stopMinutes: "<%=timer.stopMinutes%>",
+                        stopSeconds: "<%=timer.stopSeconds%>",
                         created: "<%=timer.created%>"
                     });
                 </script>
@@ -62,6 +67,7 @@
                     <% if (!username) { %>
                         | <button onclick="editBtns('<%=timer.id%>')">edytuj</button>
                           <button onclick="deleteTimer('<%=timer.id%>')">usuń</button>
+                          <% if (!stopped) { %> <button onclick="stopTimer('<%=timer.id%>')">zatrzymaj</button> <% }%>
                         <% if (timer.private) { %>
                             <button onclick='publicTimer("<%=timer.id%>")'>upublicznij</button>
                         <% } else { %>
@@ -126,6 +132,31 @@
 
             function onload() {
 
+            }
+
+            function stopTimer(id) {
+                var verify = prompt("Ta akcja jest nieodwracalna. Aby potwierdzić, wpisz \"STOP\".");
+                if (verify == "STOP") {
+                    var data = {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            "timerId": id
+                        })
+                    }
+                    fetch('/timer/stop', data)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                window.location.reload();
+                            } else {
+                                alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                            }
+                        });
+                }
             }
 
             function editBtns(id) {
