@@ -67,7 +67,7 @@
                     <% if (!username) { %>
                         | <button onclick="editBtns('<%=timer.id%>')">edytuj</button>
                           <button onclick="deleteTimer('<%=timer.id%>')">usuń</button>
-                          <% if (!stopped) { %> <button onclick="stopTimer('<%=timer.id%>')">zatrzymaj</button> <% }%>
+                          <% if (!timer.stopped) { %> <button onclick="stopTimer('<%=timer.id%>')">zatrzymaj</button> <% }%>
                         <% if (timer.private) { %>
                             <button onclick='publicTimer("<%=timer.id%>")'>upublicznij</button>
                         <% } else { %>
