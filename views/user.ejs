@@ -27,6 +27,9 @@
         </style>
     </head>
     <body>
+        <script>
+            var timers = [];
+        </script>
 	<% if (session.logged) { %>
         	<p>Witaj <%=session.username%>! <button id="submit" onclick="window.location.href='/'">strona główna</button> <button id="submit" onclick="logout()">wyloguj się</button> <% if (isAdmin) { %> <button id="submit" onclick="window.location.href='/admin'">admin panel</button> <% } %></p>
         	<p>Link do twojego profilu: <a href="/user/<%=session.username%>">https://atime.arindev.tech/user/<%=session.username%></a></p>
@@ -42,7 +45,10 @@
         <% if (timers != "error" && !timers.length > 0 && username) { %> <p>Użytkownik <%=username%> nie ma żadnych liczników.</p> <% } else if (username) { %> <p>Liczniki użytkownika <%=username%>:</p> <% } %>
         <div id="userTimers">
             <% timers.forEach(timer => { %>
-                <p onload="addTimer('<%=timer%>')"><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> | <%=timer.private ? "prywatny" : "publiczny"%> <%=timer.featured ? "| wyróżniony" : ""%> 
+                <script>
+                    timers.push('<%=timer%>')
+                </script>
+                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> | <%=timer.private ? "prywatny" : "publiczny"%> <%=timer.featured ? "| wyróżniony" : ""%> 
                     <% if (!username) { %>
                         | <button onclick="editBtns('<%=timer.id%>')">edytuj</button>
                           <button onclick="deleteTimer('<%=timer.id%>')">usuń</button>
@@ -94,7 +100,6 @@
             var lastPreviewDate = "";
             var lastPreviewTime = "";
             var lastPreviewInfo = "";
-            var timers = [];
 
             var isAdmin = "<%=isAdmin%>";
 
