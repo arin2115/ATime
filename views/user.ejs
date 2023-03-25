@@ -103,8 +103,8 @@
             }
 
             function editBtns(id) {
-                var timers = "<%=timers%>";
-                var timer = JSON.parse(timers).find(timer => timer.id == id);
+                var timers = "{<%=timers%>}";
+                var timer = JSON.parse(timers).filter(timer => timer.id == id)[0];
 
                 document.getElementById("createtimer-title").value = timer.title;
                 document.getElementById("createtimer-date").value = timer.date;
