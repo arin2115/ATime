@@ -103,7 +103,7 @@
             }
 
             function editBtns(id) {
-                var timer = "<%=timers.find(t => t.id == id)%>";
+                var timer = `<%=timers.find(t => t.id == '${id}')%>`;
 
                 document.getElementById("createtimer-title").value = timer.title;
                 document.getElementById("createtimer-date").value = timer.date;
