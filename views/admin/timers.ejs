@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+
         <meta property="og:title" content="Liczniki - ATime" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://atime.arindev.tech" />
@@ -26,22 +26,40 @@
         <% if (timers.filter(t => t.featured).length > 0) { %> <hr> <p>Wyróżnione liczniki:</p> <% } %>
         <div id="featuredTimers">
             <% timers.filter(t => t.featured).forEach(timer => { %>
-                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="unfeatureTimer('<%=timer.id%>')">nie wyróżniaj</button> <button onclick="privateTimer('<%=timer.id%>')">ukryj</button> <% } %></p>
+                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="handleEdit('<%=timer.id%>')">edytuj</button> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="unfeatureTimer('<%=timer.id%>')">nie wyróżniaj</button> <button onclick="privateTimer('<%=timer.id%>')">uprywatnij</button> <% } %></p>
             <% }) %>
         </div>
 
         <div id="publicTimers">
             <% if (timers != "error" && timers.filter(t => !t.featured && !t.private).length > 0) { %> <hr> <p>Publiczne liczniki:</p> <% } %>
             <% timers.filter(t => !t.featured && !t.private).forEach(timer => { %>
-                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="featureTimer('<%=timer.id%>')">wyróżnij</button> <button onclick="privateTimer('<%=timer.id%>')">ukryj</button> <% } %></p>
+                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="handleEdit('<%=timer.id%>')">edytuj</button> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="featureTimer('<%=timer.id%>')">wyróżnij</button> <button onclick="privateTimer('<%=timer.id%>')">uprywatnij</button> <% } %></p>
             <% }) %>
         </div>
 
         <div id="privateTimers">
             <% if (timers != "error" && timers.filter(t => !t.featured && t.private).length > 0) { %> <hr> <p>Prywatne liczniki:</p> <% } %>
             <% timers.filter(t => !t.featured && t.private).forEach(timer => { %>
-                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="featureTimer('<%=timer.id%>')">wyróżnij</button> <button onclick="publicTimer('<%=timer.id%>')">upublicznij</button> <% } %></p>
+                <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> <% if (isAdmin) { %> <button onclick="handleEdit('<%=timer.id%>')">edytuj</button> <button onclick="deleteTimer('<%=timer.id%>')">usuń</button> <button onclick="featureTimer('<%=timer.id%>')">wyróżnij</button> <button onclick="publicTimer('<%=timer.id%>')">upublicznij</button> <% } %></p>
             <% }) %>
+        </div>
+
+        <div id="edit" style="display: none;">
+            <hr>
+
+            <p id="createtext">Edytuj licznik: </p>
+            <p id="err" style="color: red"></p>
+            <input type="text" placeholder="Nazwa licznika" id="createtimer-title">
+            <input type="date" placeholder="Data" id="createtimer-date">
+            <input type="time" placeholder="Godzina" id="createtimer-time">
+            <input type="text" placeholder="Wyświetlanie" id="createtimer-display" value="{nazwa} od {data} {godzina}">
+            <p>Przykład: <b>{nazwa} od {data} {godzina}</b></p>
+            <br><br>
+            <button id="createTimerBtn" onclick="editTimer(this)" value="create">Zapisz zmiany</button>
+            <button id="cancelTimerBtn" onclick="cancelChanges()">Anuluj zmiany</button>
+            <button onclick="preview()">Podgląd</button>
+            <br><br>
+            <iframe id="previewframe" src="/timer/preview/nazwa/data/godzina/info" style="visibility: hidden;" width="50%" height="480px"></iframe>
         </div>
 
         <script>
@@ -61,6 +79,98 @@
                             alert(data.errors[0].message + " [" + data.errors[0].code + "]");
                         }
                     });
+            }
+
+            function handleEdit(id) {
+                document.getElementById("edit").style.display = "initial";
+                document.getElementById("createtext").innerHTML = "Edytuj licznik: <b>" + id + "</b>";
+                document.getElementById("createTimerBtn").value = id;
+            }
+
+            function cancelChanges() {
+                document.getElementById("edit").style.display = "none";
+                document.getElementById("previewframe").style.visibility = "hidden";
+                document.getElementById("previewframe").src = "/timer/preview/nazwa/data/godzina/info";
+            }
+
+            function editTimer(el) {
+                var id = el.value;
+                var err = document.getElementById("err");
+                err.innerHTML = "";
+
+                var title = document.getElementById("createtimer-title").value;
+                var date = document.getElementById("createtimer-date").value;
+                var time = document.getElementById("createtimer-time").value;
+                var display = document.getElementById("createtimer-display").value;
+
+                if (title == "" || date == "" || time == "" || display == "") {
+                    err.innerHTML = "Wypełnij tytuł, datę, godzinę oraz sposób wyświetlania!";
+                    return;
+                }
+
+                var data = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "timerId": id,
+                        "title": title,
+                        "date": date,
+                        "time": time,
+                        "display": display,
+                    })
+                }
+
+                fetch('/timer/edit', data)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.errors[0].message + " [" + data.errors[0].code + "]");
+                        }
+                    });
+            }
+
+            function preview() {
+                var previewframe = document.getElementById("previewframe");
+                var err = document.getElementById("err");
+                var title = document.getElementById("createtimer-title").value;
+                var date = document.getElementById("createtimer-date").value;
+                var time = document.getElementById("createtimer-time").value;
+                var display = document.getElementById("createtimer-display").value;
+
+                if (title == "" || date == "" || time == "" || display == "") {
+                    err.innerHTML = "Wypełnij tytuł, datę, godzinę i sposób wyświetlania.";
+                    previewframe.src = "";
+                    previewframe.style.visibility = "hidden";
+                    lastPreviewTitle = "";
+                    lastPreviewDate = "";
+                    lastPreviewTime = "";
+                    lastPreviewDisplay = "";
+
+                    return;
+                }
+
+                if (title == lastPreviewTitle && date == lastPreviewDate && time == lastPreviewTime && display == lastPreviewDisplay) {
+                    previewframe.src = "";
+                    previewframe.style.visibility = "hidden";
+                    lastPreviewTitle = "";
+                    lastPreviewDate = "";
+                    lastPreviewTime = "";
+                    lastPreviewDisplay = "";
+                    return;
+                }
+
+                lastPreviewTitle = title;
+                lastPreviewDate = date;
+                lastPreviewTime = time;
+                lastPreviewDisplay = display;
+
+                previewframe.src = "/timer/preview/" + document.getElementById("createtimer-title").value + "/" + document.getElementById("createtimer-date").value + "/" + document.getElementById("createtimer-time").value + "/" + document.getElementById("createtimer-display").value;
+                previewframe.style.visibility = "visible";
             }
 
             function featureTimer(id) {
