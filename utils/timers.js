@@ -26,9 +26,9 @@ async function editTimer(data) {
 
     await db.get(`timers`)
         .then(async (data) => {
-            var timer = data.find(t => t.id == data.timerId);
+            var timer = data.find(t => t.id == data.id);
 
-            await db.pull(`timers`, t => t.id == data.timerId);
+            await db.pull(`timers`, t => t.id == data.id);
 
             var newTimer = {
                 id: data.timerId,

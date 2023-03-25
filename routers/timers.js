@@ -88,7 +88,7 @@ router.post('/edit', async (req, res) => {
             if (!await utils.isAdmin(req.session) || timer.username != req.session.username) return res.status(401).json(utils.error("INSUFFICIENT_PERMISSIONS", "You do not have permission to edit this timer."));
 
             var data = {
-                timerId: req.body.timerId,
+                id: timer.id,
                 title: req.body.title,
                 date: req.body.date,
                 time: req.body.time,
