@@ -153,21 +153,21 @@
             window.onload = function() {
                 var isStopped = "<%=timer.stopped%>";
                 if (isStopped == "true") {
-                    var stoppedDays = new Date("<%=timer.stoppedDays%>");
-                    var stoppedHours = new Date("<%=timer.stoppedHours%>");
-                    var stoppedMinutes = new Date("<%=timer.stoppedMinutes%>");
-                    var stoppedSeconds = new Date("<%=timer.stoppedSeconds%>");
+                    var stopDays = new Date("<%=timer.stopDays%>");
+                    var stopHours = new Date("<%=timer.stopHours%>");
+                    var stopMinutes = new Date("<%=timer.stopMinutes%>");
+                    var stopSeconds = new Date("<%=timer.stopSeconds%>");
 
-                    if (stoppedDays == 0) $( "#days" ).hide();
+                    if (stopDays == 0) $( "#days" ).hide();
                     else $( "#days" ).show();
 
-                    if (stoppedHours == 0) $( "#hours" ).hide();
+                    if (stopHours == 0) $( "#hours" ).hide();
                     else $( "#hours" ).show();
 
-                    numberTransition('#days .number', stoppedDays, 1000, 'easeOutQuad');
-                    numberTransition('#hours .number', stoppedHours, 1000, 'easeOutQuad');
-                    numberTransition('#minutes .number', stoppedMinutes, 1000, 'easeOutQuad');
-                    numberTransition('#seconds .number', stoppedSeconds, 1000, 'easeOutQuad');
+                    numberTransition('#days .number', stopDays, 1000, 'easeOutQuad');
+                    numberTransition('#hours .number', stopHours, 1000, 'easeOutQuad');
+                    numberTransition('#minutes .number', stopMinutes, 1000, 'easeOutQuad');
+                    numberTransition('#seconds .number', stopSeconds, 1000, 'easeOutQuad');
                 } else if (isStopped == "false") {
                     targetDate = new Date("<%=timer.date%>T<%=timer.time%>");
                     timeToLaunch();
