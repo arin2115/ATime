@@ -46,7 +46,17 @@
         <div id="userTimers">
             <% timers.forEach(timer => { %>
                 <script>
-                    timers.push(JSON.parse('<%=timer%>'));
+                    timers.push({
+                        id: "<%=timer.id%>",
+                        title: "<%=timer.title%>",
+                        date: "<%=timer.date%>",
+                        time: "<%=timer.time%>",
+                        display: "<%=timer.display%>",
+                        username: "<%=timer.username%>",
+                        private: "<%=timer.private%>",
+                        featured: "<%=timer.featured%>",
+                        created: "<%=timer.created%>"
+                    });
                 </script>
                 <p><a href="/timer/<%=timer.id%>"><%=timer.title%> - <%=timer.date.split("-")[2] + "." + timer.date.split("-")[1] + "." + timer.date.split("-")[0]%> <%=timer.time%></a> | <%=timer.private ? "prywatny" : "publiczny"%> <%=timer.featured ? "| wyróżniony" : ""%> 
                     <% if (!username) { %>
