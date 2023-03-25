@@ -83,6 +83,7 @@
         <% if (!username) { %>
             <hr>
 
+            <p id="createtext">Stwórz nowy licznik</p>
             <p id="err" style="color: red"></p>
             <input type="text" placeholder="Nazwa licznika" id="createtimer-title">
             <input type="date" placeholder="Data" id="createtimer-date">
@@ -119,14 +120,11 @@
             }
 
             function addTimer(timer) {
-                console.log(timer);
                 timers.push(timer);
             }
 
             function editBtns(id) {
                 var timer = timers.filter(t => t.id == id)[0];
-
-                console.log(timers, timer);
 
                 document.getElementById("createtimer-title").value = timer.title;
                 document.getElementById("createtimer-date").value = timer.date;
@@ -137,6 +135,7 @@
                 document.getElementById("cancelTimerBtn").style.display = "initial";
 
                 document.getElementById("privTimerData").style.display = "none";
+                document.getElementById("createtext").innerHTML = "Edytuj licznik <b>" + timer.title + "</b>";
             }
 
             function cancelChanges() {
@@ -149,6 +148,7 @@
                 document.getElementById("cancelTimerBtn").style.display = "none";
 
                 document.getElementById("privTimerData").style.display = "initial";
+                document.getElementById("createtext").innerHTML = "Stwórz nowy licznik";
             }
 
             function preview() {

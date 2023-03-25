@@ -21,7 +21,7 @@ async function createTimer(data) {
     return timerId;
 }
 
-async function editTimer(data) {
+async function editTimer(timerData) {
     if (!data.timerId || !data.title || !data.date || !data.time || !data.display) return console.error("Missing timer data.");
 
     await db.get(`timers`)
@@ -31,11 +31,11 @@ async function editTimer(data) {
             await db.pull(`timers`, t => t.id == data.id);
 
             var newTimer = {
-                id: data.timerId,
-                title: data.title,
-                date: data.date,
-                time: data.time,
-                display: data.display,
+                id: timerData.timerId,
+                title: timerData.title,
+                date: timerData.date,
+                time: timerData.time,
+                display: timerData.display,
                 username: timer.username,
                 private: timer.private,
                 featured: timer.featured,
