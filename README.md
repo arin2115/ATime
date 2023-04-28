@@ -9,7 +9,6 @@ Working demo: [here](https://atime.arindev.tech/).
 - API usage (using keys)
 - Featured, public and private counters
 - Adjustable counter id length
-- Real-time counters update (on main site / user profile)
 
 ## **Development environment**
 ### System Requirements
