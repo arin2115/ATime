@@ -1,8 +1,8 @@
-# **ATime**
+# <div align="center">**ATime**</div>
 
-Yet another counter site.
+<div align="center">Yet another counter site.
 
-Working demo: [here](https://atime.arindev.tech/).
+Working demo: [here](https://atime.arindev.tech/).</div>
 
 ## **Features**
 - Admin panel (manage accounts and counters)
